@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.solderbyte.notifyte.MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_bluetooth_on"
+        android:id="@+id/button_bluetooth"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/text_bluetooth"
+        android:id="@+id/text_bluetooth"
+        android:layout_alignBottom="@+id/button_bluetooth"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_scan"
+        android:id="@+id/button_scan"
+        android:layout_below="@+id/button_bluetooth"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/text_scan"
+        android:id="@+id/text_scan"
+        android:layout_alignBottom="@+id/button_scan"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_connect"
+        android:id="@+id/button_connect"
+        android:layout_below="@+id/button_scan"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/text_device"
+        android:id="@+id/text_device"
+        android:paddingBottom="10dp"
+        android:layout_alignBottom="@+id/button_connect"
+        android:layout_alignParentStart="true" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button_connect">
+
+        <ListView
+            android:id="@+id/app_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@mipmap/ic_add"
+            app:layout_anchor="@id/app_list"
+            app:layout_anchorGravity="bottom|right|end" />
+
+    </android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

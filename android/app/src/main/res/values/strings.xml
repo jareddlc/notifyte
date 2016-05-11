@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Notifyte</string>
+    <string name="service_name">Notifyte Service</string>
+
+    <string name="notification_title">Notifyte</string>
+    <string name="notification_connected">Connected</string>
+    <string name="notification_disconnected">Disconnected</string>
+    <string name="notification_connect">Connect</string>
+    <string name="notification_disconnect">Disconnect</string>
+    <string name="notification_close">Shut Down</string>
+
+    <string name="text_bluetooth">Bluetooth</string>
+    <string name="button_bluetooth_on">Turn On</string>
+    <string name="button_bluetooth_off">Turn Off</string>
+    <string name="text_scan">Scan for devices</string>
+    <string name="button_scan">Scan</string>
+    <string name="text_device">Device:</string>
+    <string name="text_device_none">None</string>
+    <string name="button_connect">Connect</string>
+
+    <string name="dialog_access_title">Enable Notification Access</string>
+    <string name="dialog_access_message">In order for Notifyte to receive notification, you must enable notification access for notifyte</string>
+    <string name="dialog_access_open">Enable</string>
+    <string name="dialog_access_close">Close</string>
+
+    <string name="dialog_scan_title">Devices</string>
+
+    <string name="progress_dialog_scan">Scanning</string>
+    <string name="progress_dialog_connecting">Connecting</string>
+</resources>

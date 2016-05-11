@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="notifyteApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/img/favicon.ico">
+
+    <title>Notifyte</title>
+
+    <!-- CSS -->
+    <link href="../static/vendors/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/vendors/css/font-awesome.css" rel="stylesheet">
+    <link href="../static/css/notifyte.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script>window.$ = window.jQuery = require('../static/vendors/js/jquery.js');</script>
+    <!-- <script src="../static/vendors/js/jquery.js"></script> -->
+    <script src="../static/vendors/js/bootstrap.js"></script>
+    <script src="../static/vendors/js/angular.js"></script>
+    <script src="../static/vendors/js/angular-resource.js"></script>
+    <script src="../static/vendors/js/angular-route.js"></script>
+    <script src="../static/js/notifyte-app.js"></script>
+    <script src="../static/js/notifyte-controllers.js"></script>
+    <script src="../static/js/notifyte-services.js"></script>
+  </head>
+  <body>
+    <!-- Side Bar -->
+    <div class="sidebar">
+      <div class="container-fluid">
+        <div class="nav-sidebar">
+          <div class="title">Notifyte <i class="fa fa-cog nav-icon pull-right" aria-hidden="true"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div ng-view></div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "notifyte",
+  "main": "index.js",
+  "homepage": "https://github.com/jareddlc/notifyte",
+  "authors": [
+    "Jared De La Cruz <jared_de_la_cruz@yahoo.com>"
+  ],
+  "description": "Smart phone notifications via bluetooth",
+  "moduleType": [],
+  "license": "ISC",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.2",
+    "angular-resource": "^1.5.2",
+    "angular-route": "^1.5.2",
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.2",
+    "font-awesome": "fontawesome#^4.5.0"
+  }
+}

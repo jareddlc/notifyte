@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="nav-main">
+    <div class="text-center">Settings</div>
+  </div>
+
+  <div ng-controller="bluetoothController">
+    <div>
+      Bluetooth State: <span class="label label-success">[[state.state]]</span>
+    </div>
+    <div>
+      Bluetooth Discoverable: <span class="label label-success">[[advertising.advertising]]</span>
+    </div>
+    <div>
+      Bluetooth Connected: <span ng-show="client.client != null" class="label label-success">[[client.client]]</span> <span ng-hide="client.client != null" class="label label-danger">none</span>
+    </div>
+  </div>
+</div>
