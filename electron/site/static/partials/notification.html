@@ -1,0 +1,11 @@
+<div class="container-fluid" ng-controller="notificationController">
+  <div class="nav-main">
+    <div class="text-center">[[currentNotification[0].name]]</div>
+  </div>
+
+  <div>
+    <div ng-repeat="(key, value) in currentNotification">
+      [[value.created | date:'MM/dd/yyyy h:mma']] [[value.message]]
+    </div>
+  </div>
+</div>

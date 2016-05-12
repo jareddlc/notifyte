@@ -256,6 +256,15 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.closeProgressConnecting();
                 }
             }
+            if(message.equals(Intents.INTENT_BLUETOOTH_CONNECTED)) {
+                Log.d(LOG_TAG, "connected to device");
+            }
+            if(message.equals(Intents.INTENT_BLUETOOTH_DISCONNECTED)) {
+                Log.d(LOG_TAG, "disconnected to device");
+            }
+            if(message.equals(Intents.INTENT_BLUETOOTH_CONNECTED_DESKTOP)) {
+                Log.d(LOG_TAG, "connected to notifyte desktop app");
+            }
             if(message.equals(Intents.INTENT_BLUETOOTH_SCAN_STOPPED)) {
                 MainActivity.this.closeProgressScan();
             }

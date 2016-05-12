@@ -14,6 +14,12 @@ notifyte.config(['$routeProvider', '$locationProvider',
     $routeProvider.when('/', {
       templateUrl: base + '/settings.html',
     });
+    $routeProvider.when('/settings', {
+      templateUrl: base + '/settings.html',
+    });
+    $routeProvider.when('/notification', {
+      templateUrl: base + '/notification.html',
+    });
     $routeProvider.otherwise({
       redirectTo: '/'
     });

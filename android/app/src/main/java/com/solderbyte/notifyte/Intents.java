@@ -6,6 +6,7 @@ public class Intents {
     public static final String INTENT_BLUETOOTH_DISCONNECT = "com.solderbyte.notifyte.bluetooth.disconnect";
     public static final String INTENT_BLUETOOTH_CONNECTING = "com.solderbyte.notifyte.bluetooth.connecting";
     public static final String INTENT_BLUETOOTH_CONNECTED = "com.solderbyte.notifyte.bluetooth.connected";
+    public static final String INTENT_BLUETOOTH_CONNECTED_DESKTOP = "com.solderbyte.notifyte.bluetooth.connected.desktop";
     public static final String INTENT_BLUETOOTH_DISCONNECTED = "com.solderbyte.notifyte.bluetooth.disconnected";
     public static final String INTENT_BLUETOOTH_ENABLED = "com.solderbyte.notifyte.bluetooth.enabled";
     public static final String INTENT_BLUETOOTH_DISABLED = "com.solderbyte.notifyte.bluetooth.disabled";

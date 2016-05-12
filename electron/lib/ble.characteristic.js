@@ -54,6 +54,9 @@ Characteristic.prototype.onWriteRequest = function(data, offset, withoutResponse
 
   var json = notification.parse(this._value.toString());
   log.info(json);
+  if(json !== null) {
+    notification.cachePut(json);
+  }
 
   callback(this.RESULT_SUCCESS);
 };

@@ -181,6 +181,10 @@ public class BluetoothLeService extends Service {
 
                         bluetoothCharacteristic = gattService.getCharacteristic(BluetoothLeService.NOTIFYTE_CHAR_UUID);
                         Log.d(LOG_TAG, "bluetoothCharacteristic: " + bluetoothCharacteristic);
+
+                        Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                        msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTED_DESKTOP);
+                        context.sendBroadcast(msg);
                     }
 
                     for(BluetoothGattCharacteristic gattCharacteristic : gattService.getCharacteristics()) {

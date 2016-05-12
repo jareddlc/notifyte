@@ -59,7 +59,8 @@ config.cache = {
     state: 'state',
     advertising: 'advertising',
     client: 'client'
-  }
+  },
+  notifications: 'notifications'
 };
 
 module.exports = config;

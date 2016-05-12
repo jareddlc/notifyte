@@ -10,15 +10,15 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
   function($rootScope, $resource, $timeout) {
 
     // $resource endpoints
-    var bluetoothState = $resource('http://localhost:7777/api/bluetooth/state', {}, {
+    var bluetoothStateAPI = $resource('http://localhost:7777/api/bluetooth/state', {}, {
       get: {method: 'GET', isArray: false}
     });
 
-    var bluetoothAdvertising = $resource('http://localhost:7777/api/bluetooth/advertising', {}, {
+    var bluetoothAdvertisingAPI = $resource('http://localhost:7777/api/bluetooth/advertising', {}, {
       get: {method: 'GET', isArray: false}
     });
 
-    var bluetoothClient = $resource('http://localhost:7777/api/bluetooth/client', {}, {
+    var bluetoothClientAPI = $resource('http://localhost:7777/api/bluetooth/client', {}, {
       get: {method: 'GET', isArray: false}
     });
 
@@ -30,7 +30,7 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
 
     // refresh data
     var gBluetoothState = function gBluetoothState() {
-      bluetoothState.get(function(data) {
+      bluetoothStateAPI.get(function(data) {
         var json = data.toJSON();
         if(!angular.equals(state, json)) {
           angular.copy(json, state);
@@ -41,7 +41,7 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
     gBluetoothState();
 
     var gBluetoothAdvertising = function gBluetoothAdvertising() {
-      bluetoothAdvertising.get(function(data) {
+      bluetoothAdvertisingAPI.get(function(data) {
         var json = data.toJSON();
         if(!angular.equals(advertising, json)) {
           angular.copy(json, advertising);
@@ -52,7 +52,7 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
     gBluetoothAdvertising();
 
     var gBluetoothClient = function gBluetoothClient() {
-      bluetoothClient.get(function(data) {
+      bluetoothClientAPI.get(function(data) {
         var json = data.toJSON();
         if(!angular.equals(client, json)) {
           angular.copy(json, client);
@@ -72,6 +72,52 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
       },
       getBluetoothClient: function getBluetoothClient() {
         return client;
+      }
+    };
+  }
+]);
+
+notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$timeout',
+  function($rootScope, $resource, $timeout) {
+
+    // $resource endpoints
+    var notificationsAPI = $resource('http://localhost:7777/api/notifications', {}, {
+      get: {method: 'GET', isArray: false}
+    });
+
+    // vars
+    var REFRESH_RATE = 5000;
+    var notifications = {};
+    var currentNotification = [];
+
+    // refresh data
+    var gNotifications = function gNotifications() {
+      notificationsAPI.get(function(data) {
+        var json = data.toJSON();
+        if(!angular.equals(notifications, json)) {
+          angular.copy(json, notifications);
+        }
+      });
+      $timeout(gNotifications, REFRESH_RATE);
+    };
+    gNotifications();
+
+    var sCurrentNotification = function sCurrentNotification(key) {
+      if(notifications[key]) {
+        currentNotification = notifications[key];
+      }
+    };
+
+    // exports
+    return {
+      getNotifications: function getNotifications() {
+        return notifications;
+      },
+      getCurrentNotification: function getCurrentNotification() {
+        return currentNotification;
+      },
+      setCurrentNotification: function setCurrentNotification(key) {
+        sCurrentNotification(key);
       }
     };
   }

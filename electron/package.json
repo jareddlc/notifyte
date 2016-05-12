@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/electron .",
     "rebuild": "./node_modules/.bin/electron-rebuild",
+    "package": "./node_modules/.bin/electron-packager ./ Notifyte --all --out ./build --version 0.37.7 --overwrite",
     "bower": "node_modules/.bin/bower install",
     "gulp-bower": "node_modules/.bin/gulp bower",
     "gulp": "node_modules/.bin/gulp"
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "bower": "^1.7.7",
+    "electron-packager": "^7.0.1",
     "gulp": "^3.9.1"
   }
 }

@@ -29,10 +29,11 @@
   </head>
   <body>
     <!-- Side Bar -->
-    <div class="sidebar">
+    <div class="sidebar" ng-controller="notificationController">
       <div class="container-fluid">
         <div class="nav-sidebar">
-          <div class="title">Notifyte <i class="fa fa-cog nav-icon pull-right" aria-hidden="true"></i></div>
+          <div class="title">Notifyte <i class="fa fa-cog nav-icon pull-right" aria-hidden="true" ng-click="showSettings()"></i></div>
+          <div class="notification" ng-repeat="(key, value) in notifications" ng-click="showNotification(key)">[[value[0].name]]</div>
         </div>
       </div>
     </div>

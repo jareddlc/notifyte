@@ -35,6 +35,20 @@ text-rendering: optimizeLegibility;*/
   color: #fff;
   background-color: #2C3E50;
   padding: 10px 20px;
+  max-height: 40px;
+}
+
+.nav-sidebar > .notification {
+  color: #fff;
+  background-color: #3d566e;
+  padding: 10px 20px;
+  cursor: pointer;
+  max-height: 40px;
+  border-bottom: 1px solid #46637f;
+}
+
+.nav-sidebar > .notification:hover {
+  background-color: #46637f;
 }
 
 .nav-icon {
@@ -62,6 +76,8 @@ text-rendering: optimizeLegibility;*/
   margin-left: -15px;
   background-color: #d4d8d8;
   padding: 10px 20px;
+  height: 40px;
+  max-height: 40px;
 }
 
 .nav-main > .title {

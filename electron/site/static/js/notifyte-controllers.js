@@ -29,3 +29,32 @@ notifyteControllers.controller('bluetoothController',  ['$rootScope', '$scope', 
 
   }
 ]);
+
+notifyteControllers.controller('notificationController',  ['$rootScope', '$scope', '$location', 'notificationService',
+  function($rootScope, $scope, $location, notificationService) {
+    $scope.currentNotification = [];
+    $scope.hello = 'world';
+
+    $scope.$watchCollection(notificationService.getNotifications, function(notifications) {
+      if(notifications) {
+        $scope.notifications = notifications;
+      }
+    });
+
+    $scope.$watchCollection(notificationService.getCurrentNotification, function(notification) {
+      if(notification) {
+        $scope.currentNotification = notification;
+      }
+    });
+
+    $scope.showSettings = function showSettings() {
+      $location.path('/settings');
+    };
+
+    $scope.showNotification = function showNotification(key) {
+      notificationService.setCurrentNotification(key);
+      $location.path('/notification');
+    };
+
+  }
+]);

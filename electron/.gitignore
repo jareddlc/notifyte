@@ -9,3 +9,6 @@ bower_components
 
 # Vendors
 site/static/vendors
+
+# Build
+build
