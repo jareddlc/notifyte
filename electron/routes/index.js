@@ -18,4 +18,6 @@ router.get('/api/bluetooth/client', ble.getBluetoothClient);
 
 router.get('/api/notifications', notifications.getNotifications);
 
+router.post('/api/notifications', notifications.postNotifications);
+
 module.exports = router;

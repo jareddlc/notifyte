@@ -79,6 +79,7 @@ public class BluetoothLeService extends Service {
     private static final UUID NOTIFYTE_MOBILE_UUID = UUID.fromString("0000fffa-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_DESKTOP_UUID = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_CHAR_UUID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFYTE_DESC_UUID = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb");
 
     // gatt states
     public static HashMap<Integer, String> gattStatus = new HashMap<Integer, String>() {{
@@ -380,7 +381,7 @@ public class BluetoothLeService extends Service {
         }
         // auto connectBle to the device
         Log.d(LOG_TAG, "connecting...");
-        bluetoothGatt = device.connectGatt(this, true, mGattCallback);
+        bluetoothGatt = device.connectGatt(this, false, mGattCallback);
         bluetoothAddress = address;
         Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
         msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTING);
@@ -404,7 +405,7 @@ public class BluetoothLeService extends Service {
             this.disconnectBle();
             Log.d(LOG_TAG, "force connecting...");
             final BluetoothDevice device = bluetoothAdapter.getRemoteDevice(bluetoothAddress);
-            bluetoothGatt = device.connectGatt(this, true, mGattCallback);
+            bluetoothGatt = device.connectGatt(this, false, mGattCallback);
             Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
             msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTING);
             msg.putExtra(Intents.INTENT_EXTRA_DATA, true);

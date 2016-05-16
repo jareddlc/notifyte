@@ -42,6 +42,7 @@ api.cachePut = function cachePut(notification) {
 
   var notifications = api.cacheGet();
   var key = notification.packageName + ':' + notification.name;
+  notification.key = key;
   if(notifications[key]) {
     log.info('Notification key already exists, adding');
     notifications[key].push(notification);

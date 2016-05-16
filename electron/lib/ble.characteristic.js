@@ -2,6 +2,7 @@ var _ = require('lodash');
 var bleno = require('bleno');
 var cache = require('memory-cache');
 var config = require('./config');
+var Descriptor = bleno.Descriptor;
 var log = require('./logger');
 var notification = require('./notification');
 var util = require('util');
@@ -9,10 +10,17 @@ var util = require('util');
 var BlenoCharacteristic = bleno.Characteristic;
 
 var Characteristic = function() {
+  var descriptor = new Descriptor({
+      uuid: config.descriptor.uuid,
+      value: null
+  });
   Characteristic.super_.call(this, {
     uuid: config.characteristic.uuid,
     properties: config.characteristic.properties,
-    value: null
+    value: null,
+    descriptors: [
+      descriptor
+    ]
   });
 
   this._hasRemaining = false;
@@ -70,6 +78,10 @@ Characteristic.prototype.onUnsubscribe = function() {
   log.info('Characteristic: onUnsubscribe');
   cache.put(config.cache.ble.client, {client: null});
   this._updateValueCallback = null;
+};
+
+Characteristic.prototype.onNotify = function() {
+  log.info('Characteristic: onNotify');
 };
 
 module.exports = Characteristic;

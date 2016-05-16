@@ -45,7 +45,7 @@ config.characteristic = {
   uuid: 'fff1',
   //uuid: 'ff27961f-4e7d-4fde-ad0a-91e7411635bc',
   //uuid: '0000XXXX-0000-1000-8000-00805f9b34fb',
-  properties: ['read', 'write'], //'read', 'write', 'writeWithoutResponse', 'notify', 'indicate'
+  properties: ['read', 'write', 'notify'], //'read', 'write', 'writeWithoutResponse', 'notify', 'indicate'
 };
 
 config.descriptor = {

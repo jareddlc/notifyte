@@ -19,6 +19,7 @@
     <!-- JS -->
     <script>window.$ = window.jQuery = require('../static/vendors/js/jquery.js');</script>
     <!-- <script src="../static/vendors/js/jquery.js"></script> -->
+    <script src="http://localhost:7777/socket.io/socket.io.js"></script>
     <script src="../static/vendors/js/bootstrap.js"></script>
     <script src="../static/vendors/js/angular.js"></script>
     <script src="../static/vendors/js/angular-resource.js"></script>
@@ -32,8 +33,11 @@
     <div class="sidebar" ng-controller="notificationController">
       <div class="container-fluid">
         <div class="nav-sidebar">
-          <div class="title">Notifyte <i class="fa fa-cog nav-icon pull-right" aria-hidden="true" ng-click="showSettings()"></i></div>
-          <div class="notification" ng-repeat="(key, value) in notifications" ng-click="showNotification(key)">[[value[0].name]]</div>
+          <div class="title">Notifyte <i class="fa fa-cog nav-icon-settings pull-right" aria-hidden="true" ng-click="showSettings()"></i></div>
+          <div class="sub-title">Phone Notifications</div>
+          <div class="notification" ng-class="{'active': isActive(key) == true}" ng-repeat="(key, value) in notifications" ng-click="showNotification(key)">
+            <i class="fa fa-mobile nav-icon" aria-hidden="true"></i> [[value[0].name]]
+          </div>
         </div>
       </div>
     </div>

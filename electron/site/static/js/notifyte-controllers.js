@@ -56,5 +56,22 @@ notifyteControllers.controller('notificationController',  ['$rootScope', '$scope
       $location.path('/notification');
     };
 
+    $scope.isActive = function isActive(key) {
+      if($scope.currentNotification.length > 0) {
+        if($scope.currentNotification[0].key === key) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    $scope.send = function send(message) {
+      if($scope.currentNotification.length > 0) {
+        notificationService.postNotifcation(message, $scope.currentNotification[0].key);
+      }
+
+      delete $scope.form;
+    };
+
   }
 ]);
