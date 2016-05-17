@@ -2,7 +2,6 @@ var _ = require('lodash');
 var bleno = require('bleno');
 var cache = require('memory-cache');
 var config = require('./config');
-var Descriptor = bleno.Descriptor;
 var log = require('./logger');
 var notification = require('./notification');
 var util = require('util');
@@ -10,17 +9,10 @@ var util = require('util');
 var BlenoCharacteristic = bleno.Characteristic;
 
 var Characteristic = function() {
-  var descriptor = new Descriptor({
-      uuid: config.descriptor.uuid,
-      value: null
-  });
   Characteristic.super_.call(this, {
     uuid: config.characteristic.uuid,
     properties: config.characteristic.properties,
-    value: null,
-    descriptors: [
-      descriptor
-    ]
+    value: null
   });
 
   this._hasRemaining = false;
@@ -70,7 +62,7 @@ Characteristic.prototype.onWriteRequest = function(data, offset, withoutResponse
 };
 
 Characteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
-  log.info('Characteristic: onSubscribe');
+  log.info('Characteristic: onSubscribe: ' + maxValueSize);
   this._updateValueCallback = updateValueCallback;
 };
 
@@ -82,6 +74,38 @@ Characteristic.prototype.onUnsubscribe = function() {
 
 Characteristic.prototype.onNotify = function() {
   log.info('Characteristic: onNotify');
+};
+
+Characteristic.prototype.sendNotification = function(notification) {
+  log.debug('Characteristic: sendNotification', notification);
+  if(this._updateValueCallback) {
+    var buffer = [];
+    var json = JSON.stringify(notification);
+
+    if(json.length > config.ble.mtu) {
+      var b = new Buffer(config.ble.mtu);
+      for(var i = 0; i < json.length; i++) {
+        if(i !== 0 && i % config.ble.mtu === 0) {
+          buffer.push(b);
+          b = new Buffer(config.ble.mtu);
+          b.write(json[i], i % config.ble.mtu, 'utf8');
+        }
+        else if(i === json.length - 1) {
+          b.write(json[i], i % config.ble.mtu, 'utf8');
+          buffer.push(b);
+        }
+        else {
+          b.write(json[i], i % config.ble.mtu, 'utf8');
+        }
+      }
+    }
+
+    //this._updateValueCallback(buff);
+  }
+};
+
+Characteristic.prototype._sendNotification = function(buffer) {
+  this._updateValueCallback(buffer);
 };
 
 module.exports = Characteristic;

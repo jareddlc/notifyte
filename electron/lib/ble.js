@@ -6,6 +6,7 @@ var Characteristic = require('./ble.characteristic');
 var log = require('./logger');
 
 var api = module.exports = {};
+api.characteristic = new Characteristic();
 
 api.init = function init(callback) {
   cache.put(config.cache.ble.client, {client: null});
@@ -60,7 +61,7 @@ api.onAdvertisingStart = function onAdvertisingStart(err) {
       new BlenoPrimaryService({
         uuid: config.serviceUuid[0],
         characteristics: [
-          new Characteristic()
+          api.characteristic
         ]
       })
     ]);
@@ -95,4 +96,11 @@ api.onServicesSet = function onServicesSet(err) {
 
 api.onServicesSetError = function onServicesSetError(err) {
   log.info('on -> onServicesSetError: ' + err);
+};
+
+api.sendNotification = function sendNotification(notification) {
+  log.info('ble.sendNotification');
+  if(api.characteristic) {
+    api.characteristic.sendNotification(notification);
+  }
 };

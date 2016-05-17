@@ -36,7 +36,8 @@ config.window = {
 //config.serviceUuid = ['31419fef-b24e-4ea8-a280-86572b6c0a7d'];
 
 config.ble = {
-  limit: 512
+  limit: 512,
+  mtu: 20
 };
 config.serviceUuid = ['fff0'];
 

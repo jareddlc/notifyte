@@ -9,5 +9,6 @@ api.getNotifications = function getNotifications(req, res) {
 };
 
 api.postNotifications = function postNotifications(req, res) {
+  notification.sendNotification(req.body);
   res.status(200).end();
 };

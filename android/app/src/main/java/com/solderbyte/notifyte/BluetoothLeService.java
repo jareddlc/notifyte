@@ -19,6 +19,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -29,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -40,6 +42,7 @@ public class BluetoothLeService extends Service {
     public static boolean isConnected = false;
     public static boolean isScanning = false;
     public static boolean isRemaining = false;
+    public static boolean isReceiving = false;
     public static volatile boolean isThreadRunning = false;
 
     // bluetooth
@@ -50,6 +53,7 @@ public class BluetoothLeService extends Service {
     private static BluetoothSocket bluetoothSocket;
     private static BluetoothServerSocket bluetoothServerSocket;
     private static BluetoothGattCharacteristic bluetoothCharacteristic;
+    private static BluetoothGattDescriptor bluetoothDescriptor;
     public static InputStream inputStream;
     public static OutputStream outputStream;
 
@@ -67,7 +71,9 @@ public class BluetoothLeService extends Service {
     private Context context;
     private final static long SCAN_PERIOD = 5000;
     private final static int BYTE_MAX = 512;
+    private final static int BYTE_MTU = 20;
     private byte[] BYTE_BUFFER = null;
+    ArrayList BYTE_RX_BUFFER = new ArrayList();
     public final static String EXTRA_DATA = "EXTRA_DATA";
     public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
@@ -79,7 +85,7 @@ public class BluetoothLeService extends Service {
     private static final UUID NOTIFYTE_MOBILE_UUID = UUID.fromString("0000fffa-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_DESKTOP_UUID = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_CHAR_UUID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
-    private static final UUID NOTIFYTE_DESC_UUID = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFYTE_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     // gatt states
     public static HashMap<Integer, String> gattStatus = new HashMap<Integer, String>() {{
@@ -181,7 +187,22 @@ public class BluetoothLeService extends Service {
                         Log.d(LOG_TAG, "Service Found: Notifyte Desktop App");
 
                         bluetoothCharacteristic = gattService.getCharacteristic(BluetoothLeService.NOTIFYTE_CHAR_UUID);
+                        gatt.setCharacteristicNotification(bluetoothCharacteristic, true);
                         Log.d(LOG_TAG, "bluetoothCharacteristic: " + bluetoothCharacteristic);
+
+                        bluetoothDescriptor = bluetoothCharacteristic.getDescriptor(BluetoothLeService.NOTIFYTE_DESC_UUID);
+                        bluetoothDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                        gatt.writeDescriptor(bluetoothDescriptor);
+
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            boolean mtu = gatt.requestMtu(BluetoothLeService.BYTE_MAX);
+                            Log.d(LOG_TAG, "requestMtu: " + mtu + " : " + BluetoothLeService.BYTE_MAX);
+                        }
+                        else {
+                            Log.d(LOG_TAG, "requestMtu: " + 20);
+                        }
+
+                        Log.d(LOG_TAG, "bluetoothDescriptor: " + bluetoothDescriptor);
 
                         Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
                         msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTED_DESKTOP);
@@ -222,7 +243,7 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.d(LOG_TAG, "onCharacteristicWrite: " + characteristic + ":" + gattStatus.get(status));
-            BluetoothLeService.this.broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+            //BluetoothLeService.this.broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             if(isRemaining) {
                 Log.d(LOG_TAG, "onCharacteristicWrite: isRemaining");
                 isRemaining = false;
@@ -252,12 +273,30 @@ public class BluetoothLeService extends Service {
         final Intent intent = new Intent(action);
         // for all other profiles, writes the data formatted in HEX.
         final byte[] data = characteristic.getValue();
+
+        if(isReceiving) {
+            Log.d(LOG_TAG, "adding to buffer");
+            BYTE_RX_BUFFER.add(data);
+        }
+        else {
+            Log.d(LOG_TAG, "creating new buffer");
+            BYTE_RX_BUFFER = new ArrayList();
+            BYTE_RX_BUFFER.add(data);
+        }
+
+        if(data.length == BYTE_MTU) {
+            Log.d(LOG_TAG, "isReceiving");
+            isReceiving = true;
+        }
+        else {
+            Log.d(LOG_TAG, "isNotReceiving");
+            isReceiving = false;
+        }
+
         if(data != null && data.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(data.length);
-            for(byte byteChar : data) {
-                stringBuilder.append(String.format("%02X ", byteChar));
-            }
-            intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+            String str = new String(data);
+            Log.d(LOG_TAG, "received: " + data.length + " : " + str);
+            intent.putExtra(EXTRA_DATA, new String(data));
         }
         this.sendBroadcast(intent);
     }
@@ -299,7 +338,7 @@ public class BluetoothLeService extends Service {
             Log.w(LOG_TAG, "bluetoothAdapter is null or bluetoothGatt is null");
             return;
         }
-        Log.d(LOG_TAG, "setCharacteristicNotification");
+        Log.d(LOG_TAG, "setCharacteristicNotification: " + enabled);
         bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
     }
 

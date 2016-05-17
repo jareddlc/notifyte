@@ -3,7 +3,14 @@ var config = require('./config');
 var log = require('./logger');
 
 var api = module.exports = {};
-cache.put(config.cache.notifications, {});
+
+api.init = function init(data, callback) {
+  api.ble = data.ble;
+  cache.put(config.cache.notifications, {});
+  if(callback) {
+    callback(null);
+  }
+};
 
 api.isNotification = function isNotification(json) {
   if(!json.appName) {
@@ -37,18 +44,18 @@ api.parse = function parse(msg) {
 
 api.cachePut = function cachePut(notification) {
   if(notification === null) {
-    return log.info('Cannot insert null notification into cache');
+    return log.info('Notification: cannot insert null notification into cache');
   }
 
   var notifications = api.cacheGet();
   var key = notification.packageName + ':' + notification.name;
   notification.key = key;
   if(notifications[key]) {
-    log.info('Notification key already exists, adding');
+    log.info('Notification: key already exists, adding');
     notifications[key].push(notification);
   }
   else {
-    log.info('Notification key does not exist, creating');
+    log.info('Notification: key does not exist, creating');
     notifications[key] = [];
     notifications[key].push(notification);
   }
@@ -58,4 +65,11 @@ api.cachePut = function cachePut(notification) {
 
 api.cacheGet = function cacheGet() {
   return cache.get(config.cache.notifications);
+};
+
+api.sendNotification = function sendNotification(notification) {
+  log.info('Notification: sendNotification');
+  if(api.isNotification(notification)) {
+    api.ble.sendNotification(notification);
+  }
 };
