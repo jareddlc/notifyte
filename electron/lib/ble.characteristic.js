@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var async = require('async');
 var bleno = require('bleno');
 var cache = require('memory-cache');
 var config = require('./config');
@@ -77,7 +78,8 @@ Characteristic.prototype.onNotify = function() {
 };
 
 Characteristic.prototype.sendNotification = function(notification) {
-  log.debug('Characteristic: sendNotification', notification);
+  var self = this;
+  log.info('Characteristic: sendNotification', notification);
   if(this._updateValueCallback) {
     var buffer = [];
     var json = JSON.stringify(notification);
@@ -85,27 +87,64 @@ Characteristic.prototype.sendNotification = function(notification) {
     if(json.length > config.ble.mtu) {
       var b = new Buffer(config.ble.mtu);
       for(var i = 0; i < json.length; i++) {
-        if(i !== 0 && i % config.ble.mtu === 0) {
+        if(i === json.length - 1) {
+          if(i % config.ble.mtu === 0) {
+            buffer.push(b);
+            b = new Buffer(2);
+            b.write(json[i], 0, 'utf8');
+            b.write('\0', 1, 'utf8');
+            buffer.push(b);
+          }
+          else if(i % config.ble.mtu === config.ble.mtu - 1) {
+            b.write(json[i], i % config.ble.mtu, 'utf8');
+            buffer.push(b);
+
+            b = new Buffer(1);
+            b.write('\0', 0, 'utf8');
+            buffer.push(b);
+          }
+          else {
+            b.write(json[i], i % config.ble.mtu, 'utf8');
+            b.write('\0', i % config.ble.mtu + 1, 'utf8');
+            buffer.push(b);
+          }
+
+        }
+        else if(i !== 0 && i % config.ble.mtu === 0) {
           buffer.push(b);
           b = new Buffer(config.ble.mtu);
           b.write(json[i], i % config.ble.mtu, 'utf8');
-        }
-        else if(i === json.length - 1) {
-          b.write(json[i], i % config.ble.mtu, 'utf8');
-          buffer.push(b);
         }
         else {
           b.write(json[i], i % config.ble.mtu, 'utf8');
         }
       }
-    }
 
-    //this._updateValueCallback(buff);
+      async.each(buffer, function(buff, callback) {
+        setTimeout(function() {
+          self._sendNotification(buff);
+          callback(null);
+        }, 200);
+      }, function(err) {
+        if(err) {
+          log.error('Notification: could not send notification');
+        }
+        else {
+          log.info('Notification: sent notification');
+        }
+      });
+    }
+    else {
+      log.info('Characteristic: did not sendNotification');
+    }
   }
 };
 
 Characteristic.prototype._sendNotification = function(buffer) {
-  this._updateValueCallback(buffer);
+  log.debug('Characteristic: _sendNotification', buffer.toString());
+  if(this._updateValueCallback) {
+    this._updateValueCallback(buffer);
+  }
 };
 
 module.exports = Characteristic;

@@ -217,12 +217,12 @@ public class BluetoothLeService extends Service {
                         byte[] cValue = gattCharacteristic.getValue();
                         int cWriteType = gattCharacteristic.getWriteType();
 
-//                        Log.d(LOG_TAG, "gattCharacteristic cUuid: " + cUuid);
-//                        Log.d(LOG_TAG, "gattCharacteristic cInstanceId: " + cInstanceId);
-//                        Log.d(LOG_TAG, "gattCharacteristic cPermissions: " + cPermissions + ":" + gattCharacteristicPermission.get(cPermissions));
-//                        Log.d(LOG_TAG, "gattCharacteristic cProperties: " + cProperties + ":"  + gattCharacteristicProperty.get(cProperties));
-//                        Log.d(LOG_TAG, "gattCharacteristic cValue: " + cValue);
-//                        Log.d(LOG_TAG, "gattCharacteristic cWriteType: " + cWriteType + ":"  +  gattCharacteristicWriteType.get(cWriteType));
+                        // Log.d(LOG_TAG, "gattCharacteristic cUuid: " + cUuid);
+                        // Log.d(LOG_TAG, "gattCharacteristic cInstanceId: " + cInstanceId);
+                        // Log.d(LOG_TAG, "gattCharacteristic cPermissions: " + cPermissions + ":" + gattCharacteristicPermission.get(cPermissions));
+                        // Log.d(LOG_TAG, "gattCharacteristic cProperties: " + cProperties + ":"  + gattCharacteristicProperty.get(cProperties));
+                        // Log.d(LOG_TAG, "gattCharacteristic cValue: " + cValue);
+                        // Log.d(LOG_TAG, "gattCharacteristic cWriteType: " + cWriteType + ":"  +  gattCharacteristicWriteType.get(cWriteType));
                     }
                 }
                 BluetoothLeService.this.broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
@@ -295,8 +295,18 @@ public class BluetoothLeService extends Service {
 
         if(data != null && data.length > 0) {
             String str = new String(data);
-            Log.d(LOG_TAG, "received: " + data.length + " : " + str);
             intent.putExtra(EXTRA_DATA, new String(data));
+            if(str.contains("\0")) {
+                isReceiving = false;
+
+                String message = new String();
+                for(int i = 0; i < BYTE_RX_BUFFER.size(); i++) {
+                    byte[] b = (byte[]) BYTE_RX_BUFFER.get(i);
+                    String temp = new String(b);
+                    message += temp;
+                }
+                Log.d(LOG_TAG, "End of message: " + message);
+            }
         }
         this.sendBroadcast(intent);
     }
