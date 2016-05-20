@@ -20,6 +20,7 @@ public class Intents {
     public static final String INTENT_BLUETOOTH_VALUES = "com.solderbyte.notifyte.bluetooth.values";
     public static final String INTENT_BLUETOOTH_SCAN_STOPPED = "com.solderbyte.notifyte.bluetooth.scan.stopped";
     public static final String INTENT_BLUETOOTH_DATA = "com.solderbyte.notifyte.bluetooth.data";
+    public static final String INTENT_BLUETOOTH_NOTIFICATION = "com.solderbyte.notifyte.bluetooth.notification";
 
     public static final String INTENT_UI = "com.solderbyte.notifyte.ui";
     public static final String INTENT_ACTION_BLUETOOTH_SCAN = "com.solderbyte.notifyte.action.bluetooth.scan";
@@ -36,6 +37,7 @@ public class Intents {
     public static final String INTENT_NOTIFICATION_APP_NAME = "com.solderbyte.notifyte.notification.app.name";
     public static final String INTENT_NOTIFICATION_NAME = "com.solderbyte.notifyte.notification.name";
     public static final String INTENT_NOTIFICATION_CONTACT = "com.solderbyte.notifyte.notification.contact";
+    public static final String INTENT_NOTIFICATION_GROUP = "com.solderbyte.notifyte.notification.group";
     public static final String INTENT_NOTIFICATION_MESSAGE = "com.solderbyte.notifyte.notification.message";
     public static final String INTENT_NOTIFICATION_CREATED = "com.solderbyte.notifyte.notification.created";
     public static final String INTENT_NOTIFICATION_ID = "com.solderbyte.notifyte.notification.id";

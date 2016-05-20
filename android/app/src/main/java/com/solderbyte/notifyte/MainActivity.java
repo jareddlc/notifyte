@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(Intents.INTENT_UI);
                 i.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_ACTION_BLUETOOTH_SCAN);
                 MainActivity.this.sendBroadcast(i);
+                Log.d(LOG_TAG, "showProgressScan");
                 showProgressScan();
             }
         });
@@ -145,11 +146,11 @@ public class MainActivity extends AppCompatActivity {
         String packageName = this.getPackageName();
 
         if(notificationListeners == null || !notificationListeners.contains(packageName)){
-            Log.d(LOG_TAG, "Notification Access Disabled");
+            Log.d(LOG_TAG, "NotifyteNotification Access Disabled");
             this.showNotificationAccess();
         }
         else {
-            Log.d(LOG_TAG, "Notification Access Enabled");
+            Log.d(LOG_TAG, "NotifyteNotification Access Enabled");
         }
     }
 
@@ -189,10 +190,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProgressScan() {
+        Log.d(LOG_TAG, "showProgressScan()");
         progress_scan = new ProgressDialog(MainActivity.this);
         progress_scan.setMessage(getString(R.string.progress_dialog_scan));
         progress_scan.setCancelable(false);
         progress_scan.show();
+        Log.d(LOG_TAG, "showProgressScan show");
     }
 
     private void closeProgressScan() {
@@ -275,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.showDialogScan(entries, values);
             }
             if(message.equals(Intents.INTENT_BLUETOOTH_DEVICE)) {
-                String device = intent.getStringExtra(Intents.INTENT_BLUETOOTH_DEVICE);
+                String device = intent.getStringExtra(Intents.INTENT_EXTRA_DATA);
                 Log.d(LOG_TAG, "device: " + device);
             }
 

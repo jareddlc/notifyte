@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -25,6 +26,9 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -69,7 +73,7 @@ public class BluetoothLeService extends Service {
 
     // globals
     private Context context;
-    private final static long SCAN_PERIOD = 5000;
+    private final static long SCAN_PERIOD = 7000;
     private final static int BYTE_MAX = 512;
     private final static int BYTE_MTU = 20;
     private byte[] BYTE_BUFFER = null;
@@ -306,6 +310,11 @@ public class BluetoothLeService extends Service {
                     message += temp;
                 }
                 Log.d(LOG_TAG, "End of message: " + message);
+
+                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_NOTIFICATION);
+                msg.putExtra(Intents.INTENT_EXTRA_DATA, message);
+                context.sendBroadcast(msg);
             }
         }
         this.sendBroadcast(intent);
@@ -652,72 +661,76 @@ public class BluetoothLeService extends Service {
         }
     }
 
+    @SuppressLint("NewApi")
     public void scan() {
         Log.d(LOG_TAG, "scan");
         if(isEnabled) {
             if(context != null) {
                 if(!isScanning) {
-                    /*if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        Log.d(LOG_TAG, "scanning with startLeScan");
-                        mHandler.postDelayed(new Runnable() {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        Log.d(LOG_TAG, "scanning with startLeScan: " + SCAN_PERIOD + "ms");
+                        new android.os.Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 isScanning = false;
                                 bluetoothAdapter.stopLeScan(mLeScanCallback);
-                                Message msg = mHandler.obtainMessage();
-                                Bundle b = new Bundle();
-                                b.putString("bluetooth", "scanStopped");
-                                msg.setData(b);
-                                mHandler.sendMessage(msg);
-                                setEntries();
+                                Log.d(LOG_TAG, "scanned stopped");
+
+                                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_SCAN_STOPPED);
+                                context.sendBroadcast(msg);
+
+                                BluetoothLeService.this.setEntries();
                             }
                         }, SCAN_PERIOD);
+
                         isScanning = true;
                         bluetoothAdapter.startLeScan(mLeScanCallback);
                     }
-
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Log.d(LOG_TAG, "scanning with startScan"+ bluetoothAdapter);
-                        mHandler.postDelayed(new Runnable() {
+                    else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Log.d(LOG_TAG, "scanning with startScan: " + SCAN_PERIOD + "ms");
+                        new android.os.Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 isScanning = false;
                                 BluetoothLeScanner mBluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
                                 mBluetoothLeScanner.stopScan(mScanCallback);
-                                Message msg = mHandler.obtainMessage();
-                                Bundle b = new Bundle();
-                                b.putString("bluetooth", "scanStopped");
-                                msg.setData(b);
-                                mHandler.sendMessage(msg);
-                                setEntries();
+                                Log.d(LOG_TAG, "scanned stopped");
+
+                                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_SCAN_STOPPED);
+                                context.sendBroadcast(msg);
+                                BluetoothLeService.this.setEntries();
                             }
                         }, SCAN_PERIOD);
 
                         isScanning = true;
                         BluetoothLeScanner mBluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
                         mBluetoothLeScanner.startScan(mScanCallback);
+                    }
+                    else {
+                        Log.d(LOG_TAG, "scanning with startDiscovery: " + SCAN_PERIOD + "ms");
+                        // Bluetooth Classic
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                isScanning = false;
+                                bluetoothAdapter.cancelDiscovery();
+                                Log.d(LOG_TAG, "scanned stopped");
 
-                    }*/
+                                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_SCAN_STOPPED);
+                                context.sendBroadcast(msg);
+                                BluetoothLeService.this.setEntries();
+                                BluetoothLeService.this.unregisterReceiver(scanReceiver);
+                            }
+                        }, SCAN_PERIOD);
 
-                    // Stops scanning after a pre-defined scan period
-                    new android.os.Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            isScanning = false;
-                            bluetoothAdapter.cancelDiscovery();
-                            Log.d(LOG_TAG, "scanned stopped");
-                            Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
-                            msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_SCAN_STOPPED);
-                            context.sendBroadcast(msg);
-                            BluetoothLeService.this.setEntries();
-                            BluetoothLeService.this.unregisterReceiver(scanReceiver);
-                        }
-                    }, SCAN_PERIOD);
 
-                    Log.d(LOG_TAG, "starting scan for: " + SCAN_PERIOD + "ms");
-                    IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                    this.registerReceiver(scanReceiver, filter);
-                    isScanning = true;
-                    bluetoothAdapter.startDiscovery();
+                        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                        this.registerReceiver(scanReceiver, filter);
+                        isScanning = true;
+                        bluetoothAdapter.startDiscovery();
+                    }
                 }
                 else {
                     Log.d(LOG_TAG, "currently scanning");
@@ -732,17 +745,16 @@ public class BluetoothLeService extends Service {
         }
     }
 
-    /*private LeScanCallback mLeScanCallback = new LeScanCallback() {
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            Log.d(LOG_TAG, "onLeScan: " + rssi);
             if(scannedDevices.add(device)) {
-                Log.d(LOG_TAG, device.getName()+" : "+device.getAddress()+" : "+device.getType()+" : "+device.getBondState());
-                Message msg = mHandler.obtainMessage();
-                Bundle b = new Bundle();
-                b.putString("bluetoothDevice", device.getName()+","+device.getAddress());
-                msg.setData(b);
-                mHandler.sendMessage(msg);
-                setEntries();
+                Log.d(LOG_TAG, device.getName() + " : " + device.getAddress() + " : " + device.getType() + " : " + device.getBondState());
+                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_DEVICE);
+                msg.putExtra(Intents.INTENT_EXTRA_DATA, device.getName() + "," + device.getAddress());
+                context.sendBroadcast(msg);
             }
         }
     };
@@ -751,21 +763,21 @@ public class BluetoothLeService extends Service {
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
+            Log.d(LOG_TAG, "onScanResult: " + callbackType);
             BluetoothDevice device = result.getDevice();
             if(scannedDevices.add(device)) {
-                Log.d(LOG_TAG, device.getName()+" : "+device.getAddress()+" : "+device.getType()+" : "+device.getBondState());
-                Message msg = mHandler.obtainMessage();
-                Bundle b = new Bundle();
-                b.putString("bluetoothDevice", device.getName()+","+device.getAddress());
-                msg.setData(b);
-                mHandler.sendMessage(msg);
-                setEntries();
+                Log.d(LOG_TAG, device.getName() + " : " + device.getAddress() + " : " + device.getType() + " : " + device.getBondState());
+                Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
+                msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_DEVICE);
+                msg.putExtra(Intents.INTENT_EXTRA_DATA, device.getName() + "," + device.getAddress());
+                context.sendBroadcast(msg);
             }
         }
-    };*/
+    };
 
     private final BroadcastReceiver scanReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
+            Log.d(LOG_TAG, "scanReceiver");
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -773,7 +785,7 @@ public class BluetoothLeService extends Service {
                     Log.d(LOG_TAG, device.getName() + " : " + device.getAddress() + " : " + device.getType() + " : " + device.getBondState());
                     Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
                     msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_DEVICE);
-                    msg.putExtra(Intents.INTENT_BLUETOOTH_DEVICE, device.getName() + "," + device.getAddress());
+                    msg.putExtra(Intents.INTENT_EXTRA_DATA, device.getName() + "," + device.getAddress());
                     context.sendBroadcast(msg);
                 }
             }

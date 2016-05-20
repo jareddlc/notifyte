@@ -48,10 +48,10 @@ Characteristic.prototype.onWriteRequest = function(data, offset, withoutResponse
     this._byteBuffer = null;
   }
 
-  if(this._updateValueCallback) {
-    log.debug('Characteristic: onWriteRequest: notifying');
-    this._updateValueCallback(this._value);
-  }
+  // if(this._updateValueCallback) {
+  //   log.debug('Characteristic: onWriteRequest: notifying');
+  //   this._updateValueCallback(this._value);
+  // }
 
   var json = notification.parse(this._value.toString());
   log.info(json);

@@ -182,6 +182,7 @@ public class NotifyteService extends Service {
             final String packageName = intent.getStringExtra(Intents.INTENT_NOTIFICATION_PACKAGE_NAME);
             final String name = intent.getStringExtra(Intents.INTENT_NOTIFICATION_NAME);
             final String contact = intent.getStringExtra(Intents.INTENT_NOTIFICATION_CONTACT);
+            final String group = intent.getStringExtra(Intents.INTENT_NOTIFICATION_GROUP);
             final String message = intent.getStringExtra(Intents.INTENT_NOTIFICATION_MESSAGE);
             final long created = intent.getLongExtra(Intents.INTENT_NOTIFICATION_CREATED, 0);
             final int id = intent.getIntExtra(Intents.INTENT_NOTIFICATION_ID, 0);
@@ -193,6 +194,7 @@ public class NotifyteService extends Service {
                 json.put("packageName", packageName);
                 json.put("name", name);
                 json.put("contact", contact);
+                json.put("group", group);
                 json.put("message", message);
                 json.put("created", created);
                 json.put("id", id);
@@ -210,7 +212,7 @@ public class NotifyteService extends Service {
                 Log.e(LOG_TAG, "Error: converting JSON to byte[]" + e);
                 e.printStackTrace();
             }
-
+            Log.d(LOG_TAG, "Sending notification: " + json.toString());
             NotifyteService.this.writeBluetooth(bytes);
         }
     };
@@ -233,6 +235,18 @@ public class NotifyteService extends Service {
             }
             if(message.equals(Intents.INTENT_BLUETOOTH_SCAN_STOPPED)) {
                 Log.d(LOG_TAG, "Bluetooth scanning stopped");
+            }
+            if(message.equals(Intents.INTENT_BLUETOOTH_NOTIFICATION)) {
+//                Log.d(LOG_TAG, "Bluetooth notification");
+//                String data = intent.getStringExtra(Intents.INTENT_EXTRA_DATA);
+//                JSONObject json = null;
+//                try {
+//                    json = new JSONObject(data);
+//                }
+//                catch(JSONException e) {
+//                    Log.e(LOG_TAG, "Error: converting string to json" + e);
+//                    e.printStackTrace();
+//                }
             }
         }
     };
