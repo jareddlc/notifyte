@@ -1,7 +1,6 @@
 var _ = require('lodash');
 var async = require('async');
 var bleno = require('bleno');
-var cache = require('memory-cache');
 var config = require('./config');
 var log = require('./logger');
 var notification = require('./notification');
@@ -9,7 +8,11 @@ var util = require('util');
 
 var BlenoCharacteristic = bleno.Characteristic;
 
-var Characteristic = function() {
+var Characteristic = function(data) {
+  if(!data || !data.cache) {
+    throw new Error('Error: cannot initialize without cache');
+  }
+
   Characteristic.super_.call(this, {
     uuid: config.characteristic.uuid,
     properties: config.characteristic.properties,
@@ -20,6 +23,7 @@ var Characteristic = function() {
   this._byteBuffer = null;
   this._value = new Buffer(0);
   this._updateValueCallback = null;
+  this.cache = data.cache;
 };
 util.inherits(Characteristic, BlenoCharacteristic);
 
@@ -56,7 +60,7 @@ Characteristic.prototype.onWriteRequest = function(data, offset, withoutResponse
   var json = notification.parse(this._value.toString());
   log.info(json);
   if(json !== null) {
-    notification.cachePut(json);
+    notification.put(json);
   }
 
   callback(this.RESULT_SUCCESS);
@@ -64,12 +68,14 @@ Characteristic.prototype.onWriteRequest = function(data, offset, withoutResponse
 
 Characteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
   log.info('Characteristic: onSubscribe: ' + maxValueSize);
+  this.cache.put(config.cache.ble.subscribed, {subscribed: true});
   this._updateValueCallback = updateValueCallback;
 };
 
 Characteristic.prototype.onUnsubscribe = function() {
   log.info('Characteristic: onUnsubscribe');
-  cache.put(config.cache.ble.client, {client: null});
+  this.cache.put(config.cache.ble.client, {client: null});
+  this.cache.put(config.cache.ble.subscribed, {subscribed: null});
   this._updateValueCallback = null;
 };
 
@@ -127,10 +133,10 @@ Characteristic.prototype.sendNotification = function(notification) {
         }, 200);
       }, function(err) {
         if(err) {
-          log.error('Notification: could not send notification');
+          log.error('Characteristic: could not send notification');
         }
         else {
-          log.info('Notification: sent notification');
+          log.info('Characteristic: sent notification');
         }
       });
     }

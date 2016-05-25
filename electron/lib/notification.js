@@ -1,12 +1,18 @@
-var cache = require('memory-cache');
 var config = require('./config');
 var log = require('./logger');
 
 var api = module.exports = {};
 
 api.init = function init(data, callback) {
+  if(!data || !data.cache) {
+    throw new Error('Error: cannot initialize without cache');
+  }
+  if(!data.ble) {
+    throw new Error('Error: cannot initialize without ble');
+  }
   api.ble = data.ble;
-  cache.put(config.cache.notifications, {});
+  api.cache = data.cache;
+
   if(callback) {
     callback(null);
   }
@@ -42,34 +48,47 @@ api.parse = function parse(msg) {
   }
 };
 
-api.cachePut = function cachePut(notification) {
+api.put = function put(notification) {
   if(notification === null) {
     return log.info('Notification: cannot insert null notification into cache');
   }
 
-  var notifications = api.cacheGet();
-  var key = notification.packageName + ':' + notification.name;
-  notification.key = key;
-  if(notifications[key]) {
-    log.info('Notification: key already exists, adding');
-    notifications[key].push(notification);
+  var notifications = api.get();
+
+  if(notification.key && notifications[notification.key]) {
+    notifications[notification.key].push(notification);
+    api.cache.put(config.cache.notifications, notifications);
   }
   else {
-    log.info('Notification: key does not exist, creating');
-    notifications[key] = [];
-    notifications[key].push(notification);
+    var key = new Buffer(notification.packageName + ':' + notification.name).toString('base64');
+    notification.key = key;
+    if(notifications[key]) {
+      log.info('Notification: key already exists, adding');
+      notifications[key].push(notification);
+    }
+    else {
+      log.info('Notification: key does not exist, creating');
+      notifications[key] = [];
+      notifications[key].push(notification);
+    }
+
+    api.cache.put(config.cache.notifications, notifications);
   }
-
-  cache.put(config.cache.notifications, notifications);
 };
 
-api.cacheGet = function cacheGet() {
-  return cache.get(config.cache.notifications);
+api.get = function get() {
+  return api.cache.get(config.cache.notifications);
 };
 
-api.sendNotification = function sendNotification(notification) {
+api.sendNotification = function sendNotification(notification, callback) {
   log.info('Notification: sendNotification');
   if(api.isNotification(notification)) {
+    api.put(notification);
     api.ble.sendNotification(notification);
+  }
+  else {
+    if(callback) {
+      callback(new Error('Error: trying to send a non notification'));
+    }
   }
 };

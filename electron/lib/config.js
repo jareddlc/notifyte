@@ -6,6 +6,7 @@ config.name = 'Notifyte';
 config.port = process.env.PORT || 7777;
 config.service = {
   name: package.name,
+  port: config.port,
   version: package.version,
   description: package.description
 };
@@ -33,35 +34,32 @@ config.window = {
   fullscreenable: true
 };
 
-//config.serviceUuid = ['31419fef-b24e-4ea8-a280-86572b6c0a7d'];
-
 config.ble = {
   limit: 512,
   mtu: 20
 };
 config.serviceUuid = ['fff0'];
 
-
 config.characteristic = {
   uuid: 'fff1',
-  //uuid: 'ff27961f-4e7d-4fde-ad0a-91e7411635bc',
-  //uuid: '0000XXXX-0000-1000-8000-00805f9b34fb',
   properties: ['read', 'write', 'notify'], //'read', 'write', 'writeWithoutResponse', 'notify', 'indicate'
 };
 
 config.descriptor = {
-  //uuid: '917e4d97-3827-4e6e-b776-4f554d468476',
   uuid: 'fff2',
   value: 'Notifyte descriptor value'
 };
 
 config.cache = {
   ble: {
+    bluetooth: 'bluetooth',
     state: 'state',
     advertising: 'advertising',
-    client: 'client'
+    client: 'client',
+    subscribed: 'subscribed'
   },
-  notifications: 'notifications'
+  notifications: 'notifications',
+  sockets: 'sockets'
 };
 
 module.exports = config;

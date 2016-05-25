@@ -83,9 +83,6 @@ public class BluetoothLeService extends Service {
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED = "ACTION_GATT_DISCONNECTED";
     public final static String ACTION_GATT_SERVICES_DISCOVERED = "ACTION_GATT_SERVICES_DISCOVERED";
-    //private static final UUID NOTIFYTE_MOBILE_UUID = UUID.fromString("21f2c474-4df3-4b74-9990-1d404c14f3ce");
-    //private static final UUID NOTIFYTE_DESKTOP_UUID = UUID.fromString("31419fef-b24e-4ea8-a280-86572b6c0a7d");
-    //private static final UUID NOTIFYTE_CHAR_UUID = UUID.fromString("ff27961f-4e7d-4fde-ad0a-91e7411635bc");
     private static final UUID NOTIFYTE_MOBILE_UUID = UUID.fromString("0000fffa-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_DESKTOP_UUID = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
     private static final UUID NOTIFYTE_CHAR_UUID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");

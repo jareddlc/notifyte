@@ -5,13 +5,13 @@
 
   <div ng-controller="bluetoothController">
     <div>
-      Bluetooth State: <span class="label label-success">[[state.state]]</span>
+      Bluetooth State: <span class="label label-success">[[bluetooth.state]]</span>
     </div>
     <div>
-      Bluetooth Discoverable: <span class="label label-success">[[advertising.advertising]]</span>
+      Bluetooth Discoverable: <span class="label label-success">[[bluetooth.advertising]]</span>
     </div>
     <div>
-      Bluetooth Connected: <span ng-show="client.client != null" class="label label-success">[[client.client]]</span> <span ng-hide="client.client != null" class="label label-danger">none</span>
+      Bluetooth Connected: <span ng-show="bluetooth.client != null" class="label label-success">[[bluetooth.client]]</span> <span ng-hide="bluetooth.client != null" class="label label-danger">none</span>
     </div>
   </div>
 </div>

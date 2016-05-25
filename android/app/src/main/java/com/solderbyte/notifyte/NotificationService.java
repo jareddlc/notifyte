@@ -39,6 +39,11 @@ public class NotificationService extends NotificationListenerService {
     private String NOTIFICATION_TEXT = null;
     private String NOTIFICATION_BIG_TEXT = null;
 
+    // applications
+    private String APP_FB_MESSENGER = "com.facebook.orca";
+    private String APP_WHATSAPP = "com.whatsapp";
+    private String APP_G_HANGOUTS = "com.google.android.talk";
+
     // global
     private PackageManager packageManager = null;
     private Context context = null;
@@ -143,7 +148,7 @@ public class NotificationService extends NotificationListenerService {
         int ID = id;
         long CREATED = time;
 
-        if(packageName.equals("com.facebook.orca")) {
+        if(packageName.equals(APP_FB_MESSENGER)) {
             // facebook messenger
             // appName: Messenger
             // packageName: com.facebook.orca
@@ -167,7 +172,7 @@ public class NotificationService extends NotificationListenerService {
                 MESSAGE = NOTIFICATION_TEXT;
             }
         }
-        else if(packageName.equals("com.google.android.talk")) {
+        else if(packageName.equals(APP_G_HANGOUTS)) {
             // google hangouts
             // appName: Hangouts
             // packageName: com.google.android.talk
@@ -194,7 +199,7 @@ public class NotificationService extends NotificationListenerService {
                 MESSAGE = NOTIFICATION_BIG_TEXT;
             }
         }
-        else if(packageName.equals("com.whatsapp")) {
+        else if(packageName.equals(APP_WHATSAPP)) {
             // whatsapp
             // appName: WhatsApp
             // packageName: com.whatsapp
@@ -255,12 +260,8 @@ public class NotificationService extends NotificationListenerService {
             }
         }
 
-
-
         RemoteInput[] remoteInputs = this.getRemoteInputs(notification);
-
         if(remoteInputs != null) {
-            Log.d(LOG_TAG, "creating notifyte");
             NotifyteNotification notifyte = new NotifyteNotification();
             notifyte.appName = APP_NAME;
             notifyte.packageName = PACKAGE_NAME;
@@ -276,10 +277,6 @@ public class NotificationService extends NotificationListenerService {
             notifyte.remoteInputs.addAll(Arrays.asList(remoteInputs));
             listNotifyte.add(notifyte);
         }
-
-
-
-        Log.d(LOG_TAG, "created");
 
         Intent msg = new Intent(Intents.INTENT_NOTIFICATION);
         msg.putExtra(Intents.INTENT_NOTIFICATION_APP_NAME, APP_NAME);
@@ -382,24 +379,22 @@ public class NotificationService extends NotificationListenerService {
         List<NotificationCompat.Action> actions = wearableExtender.getActions();
         Log.d(LOG_TAG, "actions: " + actions);
         for(NotificationCompat.Action act : actions) {
-            Log.d(LOG_TAG, "act: " + act);
             if(act != null && act.getRemoteInputs() != null) {
+                Log.d(LOG_TAG, "act: " + act.getTitle());
                 remoteInputs = act.getRemoteInputs();
+                Log.d(LOG_TAG, "remoteInputs: " + remoteInputs.toString());
             }
         }
-        Log.d(LOG_TAG, "returning");
         return remoteInputs;
     }
 
     public android.app.RemoteInput[] getRemoteInputsFromBundle(Bundle bundle) {
-        Log.d(LOG_TAG, "getRemoteInputsFromBundle");
         android.app.RemoteInput[] remoteInputs = null;
 
         for(String key : bundle.keySet()) {
             Object value = bundle.get(key);
 
             if("android.wearable.EXTENSIONS".equals(key)) {
-                Log.d(LOG_TAG, "android.wearable.EXTENSIONS!");
                 Bundle wearBundle = ((Bundle) value);
                 for(String keyInner : wearBundle.keySet()) {
                     Object valueInner = wearBundle.get(keyInner);
@@ -409,7 +404,6 @@ public class NotificationService extends NotificationListenerService {
                             ArrayList<Notification.Action> actions = new ArrayList<>();
                             actions.addAll((ArrayList) valueInner);
                             for(Notification.Action act : actions) {
-                                Log.d(LOG_TAG, "act: " + act);
                                 if(Build.VERSION.SDK_INT >= 20) {
                                     if(act.getRemoteInputs() != null) {
                                         remoteInputs = act.getRemoteInputs();
@@ -430,7 +424,7 @@ public class NotificationService extends NotificationListenerService {
 
     public NotifyteNotification getNotifyte() {
         for(int i = 0; i < listNotifyte.size(); i++) {
-            return listNotifyte.get(i);
+            return listNotifyte.remove(i);
         }
         return null;
     }
@@ -442,6 +436,7 @@ public class NotificationService extends NotificationListenerService {
         RemoteInput[] remoteInputs = null;
         try {
             remoteInputs = new RemoteInput[notifyte.remoteInputs.size()];
+            Log.d(LOG_TAG, "RemoteInput: " + notifyte.remoteInputs.size());
         }
         catch(NullPointerException e) {
             Log.e(LOG_TAG, "Error: no remoteInputs");
@@ -449,7 +444,7 @@ public class NotificationService extends NotificationListenerService {
         }
 
 
-        Log.d(LOG_TAG, "notifyte: " + notifyte);
+        Log.d(LOG_TAG, "notifyte: " + notifyte.appName);
 
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -458,9 +453,8 @@ public class NotificationService extends NotificationListenerService {
         for(RemoteInput remoteInput : notifyte.remoteInputs){
             this.getRemoteInputInfo(remoteInput);
             remoteInputs[i] = remoteInput;
-            //This work, apart from Hangouts as probably they need additional parameter (notification_tag?)
-            Log.d(LOG_TAG, "remoteInput: " + remoteInput);
-            bundle.putCharSequence(remoteInputs[i].getResultKey(), notifyte.message);
+            Log.d(LOG_TAG, "remoteInput: " + remoteInput.getResultKey());
+            bundle.putCharSequence(remoteInputs[i].getResultKey(), "repying via Notifyte");
             i++;
         }
         RemoteInput.addResultsToIntent(remoteInputs, intent, bundle);
@@ -477,6 +471,8 @@ public class NotificationService extends NotificationListenerService {
     private void getRemoteInputInfo(RemoteInput remoteInput) {
         String resultKey = remoteInput.getResultKey();
         String label = remoteInput.getLabel().toString();
+        Log.d(LOG_TAG, "resultKey: " + resultKey);
+        Log.d(LOG_TAG, "label: " + label);
         Boolean canFreeForm = remoteInput.getAllowFreeFormInput();
         if(remoteInput.getChoices() != null && remoteInput.getChoices().length > 0) {
             String[] possibleChoices = new String[remoteInput.getChoices().length];

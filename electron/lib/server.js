@@ -11,7 +11,11 @@ var socketio  = require('socket.io');
 
 var api = module.exports = {};
 
-api.init = function init(callback) {
+api.init = function init(data, callback) {
+  if(!data || !data.cache) {
+    throw new Error('Error: cannot initialize without cache');
+  }
+
   var app = express();
 
   app.set('views', path.join(__dirname, '../site/views'));
@@ -34,6 +38,7 @@ api.init = function init(callback) {
     }
   });
 
+  socket.init(data);
   var io = socketio.listen(server);
 
   io.on('connection', socket.onConnect);

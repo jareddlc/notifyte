@@ -1,19 +1,22 @@
 var bleno = require('bleno');
 var BlenoPrimaryService = bleno.PrimaryService;
-var cache = require('memory-cache');
 var config = require('./config');
 var Characteristic = require('./ble.characteristic');
 var log = require('./logger');
 
 var api = module.exports = {};
-api.characteristic = new Characteristic();
 
-api.init = function init(callback) {
-  cache.put(config.cache.ble.client, {client: null});
+
+api.init = function init(data, callback) {
+  if(!data || !data.cache) {
+    throw new Error('Error: cannot initialize without cache');
+  }
+  api.cache = data.cache;
+  api.characteristic = new Characteristic(data);
   bleno.on('stateChange', function(state) {
     // state = unknown | resetting | unsupported | unauthorized | poweredOff | poweredOn
-    log.info('on -> stateChange: ' + state);
-    cache.put(config.cache.ble.state, {state: state});
+    log.info('BLE: stateChange: ' + state);
+    api.cache.put(config.cache.ble.state, {state: state});
 
     if(state === 'poweredOn') {
       api.startAdvertising(callback);
@@ -36,25 +39,25 @@ api.init = function init(callback) {
 };
 
 api.startAdvertising =  function startAdvertising(callback) {
-  log.info('startAdvertising');
+  log.info('BLE: startAdvertising');
   bleno.startAdvertising(config.name, config.serviceUuid);
-  cache.put(config.cache.ble.advertising, {advertising: true});
+  api.cache.put(config.cache.ble.advertising, {advertising: true});
   if(callback) {
     callback(null);
   }
 };
 
 api.stopAdvertising =  function stopAdvertising(callback) {
-  log.info('stopAdvertising');
+  log.info('BLE: stopAdvertising');
   bleno.stopAdvertising();
-  cache.put(config.cache.ble.advertising, {advertising: false});
+  api.cache.put(config.cache.ble.advertising, {advertising: false});
   if(callback) {
     callback(null);
   }
 };
 
 api.onAdvertisingStart = function onAdvertisingStart(err) {
-  log.info('on -> advertisingStart: ' + (err ? 'error ' + err : 'success'));
+  log.info('BLE: advertisingStart: ' + (err ? 'error ' + err : 'success'));
 
   if(!err) {
     bleno.setServices([
@@ -69,33 +72,33 @@ api.onAdvertisingStart = function onAdvertisingStart(err) {
 };
 
 api.onAdvertisingStartError = function onAdvertisingStartError(err) {
-  log.info('on -> onAdvertisingStartError: ' + err);
+  log.info('BLE: onAdvertisingStartError: ' + err);
 };
 
 api.onAdvertisingStop = function onAdvertisingStop() {
-  log.info('on -> onAdvertisingStop');
+  log.info('BLE: onAdvertisingStop');
 };
 
 api.onAccept = function onAccept(clientAddress) {
-  cache.put(config.cache.ble.client, {client: clientAddress});
-  log.info('on -> accept: ' + clientAddress);
+  api.cache.put(config.cache.ble.client, {client: clientAddress});
+  log.info('BLE: accept: ' + clientAddress);
 };
 
 api.onDisconnect = function onDisconnect(clientAddress) {
-  cache.put(config.cache.ble.client, {client: null});
-  log.info('on -> disconnect: ' + clientAddress);
+  api.cache.put(config.cache.ble.client, {client: null});
+  log.info('BLE: disconnect: ' + clientAddress);
 };
 
 api.onRssiUpdate = function onRssiUpdate(rssi) {
-  log.info('on -> rssiUpdate: ' + rssi);
+  log.info('BLE: rssiUpdate: ' + rssi);
 };
 
 api.onServicesSet = function onServicesSet(err) {
-  log.info('on -> onServicesSet: ' + err);
+  log.info('BLE: onServicesSet: ' + err);
 };
 
 api.onServicesSetError = function onServicesSetError(err) {
-  log.info('on -> onServicesSetError: ' + err);
+  log.info('BLE: onServicesSetError: ' + err);
 };
 
 api.sendNotification = function sendNotification(notification) {

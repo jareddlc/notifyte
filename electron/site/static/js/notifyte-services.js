@@ -11,77 +11,43 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
   function($rootScope, $resource, $timeout) {
 
     // $resource endpoints
-    var bluetoothStateAPI = $resource('http://localhost:7777/api/bluetooth/state', {}, {
-      get: {method: 'GET', isArray: false}
-    });
-
-    var bluetoothAdvertisingAPI = $resource('http://localhost:7777/api/bluetooth/advertising', {}, {
-      get: {method: 'GET', isArray: false}
-    });
-
-    var bluetoothClientAPI = $resource('http://localhost:7777/api/bluetooth/client', {}, {
+    var bluetoothAPI = $resource('http://localhost:7777/api/bluetooth', {}, {
       get: {method: 'GET', isArray: false}
     });
 
     // socket.io events
-    // socket.on('onConnect', function(data) {
-    //   socket.emit('/api/bluetooth/state', {method: 'GET'});
-    // });
-    //
-    // socket.on('/api/bluetooth/state', function(data) {
-    //   console.log('/api/bluetooth/state', data);
-    // });
+    socket.on('onConnect', function(data) {
+      socket.emit('/api/bluetooth/', {method: 'GET'});
+    });
+
+    socket.on('/api/bluetooth/', function(data) {
+      $rootScope.$apply(function() {
+        if(!angular.equals(bluetooth, data)) {
+          angular.copy(data, bluetooth);
+        }
+      });
+    });
 
     // vars
     var REFRESH_RATE = 5000;
-    var state = {};
-    var advertising = {};
-    var client = {};
+    var bluetooth = {};
 
     // refresh data
-    var gBluetoothState = function gBluetoothState() {
-      bluetoothStateAPI.get(function(data) {
+    var gBluetooth = function gBluetooth() {
+      bluetoothAPI.get(function(data) {
         var json = data.toJSON();
-        if(!angular.equals(state, json)) {
-          angular.copy(json, state);
+        if(!angular.equals(bluetooth, json)) {
+          angular.copy(json, bluetooth);
         }
       });
-      $timeout(gBluetoothState, REFRESH_RATE);
+      $timeout(gBluetooth, REFRESH_RATE);
     };
-    gBluetoothState();
-
-    var gBluetoothAdvertising = function gBluetoothAdvertising() {
-      bluetoothAdvertisingAPI.get(function(data) {
-        var json = data.toJSON();
-        if(!angular.equals(advertising, json)) {
-          angular.copy(json, advertising);
-        }
-      });
-      $timeout(gBluetoothAdvertising, REFRESH_RATE);
-    };
-    gBluetoothAdvertising();
-
-    var gBluetoothClient = function gBluetoothClient() {
-      bluetoothClientAPI.get(function(data) {
-        var json = data.toJSON();
-        if(!angular.equals(client, json)) {
-          angular.copy(json, client);
-        }
-      });
-      $timeout(gBluetoothClient, REFRESH_RATE);
-    };
-    gBluetoothClient();
+    //gBluetooth();
 
     // exports
     return {
-      getBluetoothState: function getBluetoothState() {
-        return state;
-      },
-      getBluetoothAdvertising: function getBluetoothAdvertising() {
-        return advertising;
-      },
-      getBluetoothClient: function getBluetoothClient() {
-        return client;
+      getBluetooth: function getBluetooth() {
+        return bluetooth;
       }
     };
   }
@@ -94,6 +60,20 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
     var notificationsAPI = $resource('http://localhost:7777/api/notifications', {}, {
       get: {method: 'GET', isArray: false},
       post: {method: 'POST', isArray: false}
+    });
+
+    // socket.io events
+    socket.on('onConnect', function(data) {
+      socket.emit('/api/notifications', {method: 'GET'});
+    });
+
+    socket.on('/api/notifications', function(data) {
+      $rootScope.$apply(function() {
+        if(!angular.equals(notifications, data)) {
+          angular.copy(data, notifications);
+          updateCurrentNotification();
+        }
+      });
     });
 
     // vars
@@ -112,7 +92,7 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       });
       $timeout(gNotifications, REFRESH_RATE);
     };
-    gNotifications();
+    //gNotifications();
 
     var sCurrentNotification = function sCurrentNotification(key) {
       if(notifications[key]) {
