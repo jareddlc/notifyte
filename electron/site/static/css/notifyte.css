@@ -80,8 +80,7 @@ text-rendering: optimizeLegibility;*/
   left: 240px; /* this is used in .sidebar */
   z-index: 1000;
   display: block;
-  /*overflow-x: hidden;
-  overflow-y: auto;*/
+  overflow-y: scroll;
 }
 
 /* Main navigation */
@@ -97,6 +96,26 @@ text-rendering: optimizeLegibility;*/
 
 .nav-main > .title {
   font-weight: bold;
+}
+
+.setting-title {
+  font-weight: bold;
+  padding-bottom: 15px;
+}
+
+.setting-item {
+  padding-bottom: 2px;
+}
+
+.setting-value {
+  padding-left: 5px;
+  color: #000;
+  font-size: 12px;
+}
+
+.chat-area {
+  height: 100%;
+  overflow: auto;
 }
 
 .chat-input {

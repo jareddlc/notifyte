@@ -422,9 +422,23 @@ public class NotificationService extends NotificationListenerService {
         return remoteInputs;
     }
 
-    public NotifyteNotification getNotifyte() {
+    public NotifyteNotification getNotifyte(JSONObject json) {
+        String replyPackageName = null;
+        String replyName = null;
+        try {
+            replyPackageName = json.getString(Intents.JSON_REPLY_PACKAGE_NAME);
+            replyName = json.getString(Intents.JSON_REPLY_NAME);
+        }
+        catch(JSONException e) {
+            Log.e(LOG_TAG, "Error: getNotifyte could not get: " + Intents.JSON_REPLY_PACKAGE_NAME);
+            e.printStackTrace();
+            return null;
+        }
+
         for(int i = 0; i < listNotifyte.size(); i++) {
-            return listNotifyte.remove(i);
+            if(listNotifyte.get(i).packageName.equals(replyPackageName) && listNotifyte.get(i).name.equals(replyName)) {
+                return listNotifyte.get(i);
+            }
         }
         return null;
     }
@@ -432,8 +446,9 @@ public class NotificationService extends NotificationListenerService {
     public void replyToNotification(JSONObject json) {
         Log.d(LOG_TAG, "replyToNotification");
         Log.d(LOG_TAG, json.toString());
-        NotifyteNotification notifyte = getNotifyte();
+        NotifyteNotification notifyte = getNotifyte(json);
         RemoteInput[] remoteInputs = null;
+        String message = null;
         try {
             remoteInputs = new RemoteInput[notifyte.remoteInputs.size()];
             Log.d(LOG_TAG, "RemoteInput: " + notifyte.remoteInputs.size());
@@ -443,8 +458,15 @@ public class NotificationService extends NotificationListenerService {
             return;
         }
 
-
         Log.d(LOG_TAG, "notifyte: " + notifyte.appName);
+
+        try {
+            message = json.getString(Intents.JSON_MESSAGE);
+        }
+        catch(JSONException e) {
+            Log.e(LOG_TAG, "Error: replyToNotification could not get: " + Intents.JSON_MESSAGE);
+            return;
+        }
 
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -454,7 +476,7 @@ public class NotificationService extends NotificationListenerService {
             this.getRemoteInputInfo(remoteInput);
             remoteInputs[i] = remoteInput;
             Log.d(LOG_TAG, "remoteInput: " + remoteInput.getResultKey());
-            bundle.putCharSequence(remoteInputs[i].getResultKey(), "repying via Notifyte");
+            bundle.putCharSequence(remoteInputs[i].getResultKey(), message);
             i++;
         }
         RemoteInput.addResultsToIntent(remoteInputs, intent, bundle);
@@ -463,7 +485,7 @@ public class NotificationService extends NotificationListenerService {
             notifyte.pendingIntent.send(this, 0, intent);
         }
         catch (PendingIntent.CanceledException e) {
-            Log.e(LOG_TAG, "Error: replyToNotification: " + e);
+            Log.e(LOG_TAG, "Error: replyToNotification " + e);
             e.printStackTrace();
         }
     }

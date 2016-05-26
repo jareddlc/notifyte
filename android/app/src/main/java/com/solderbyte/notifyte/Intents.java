@@ -47,4 +47,14 @@ public class Intents {
     public static final String INTENT_EXTRA_MSG = "com.solderbyte.notifyte.extra.msg";
     public static final String INTENT_EXTRA_DATA = "com.solderbyte.notifyte.extra.data";
 
+    public static final String JSON_PACKAGE_NAME = "packageName";
+    public static final String JSON_APP_NAME = "appName";
+    public static final String JSON_NAME = "name";
+    public static final String JSON_CONTACT = "contact";
+    public static final String JSON_GROUP = "group";
+    public static final String JSON_MESSAGE = "message";
+    public static final String JSON_CREATED = "created";
+    public static final String JSON_ID = "id";
+    public static final String JSON_REPLY_PACKAGE_NAME = "replyPackageName";
+    public static final String JSON_REPLY_NAME = "replyName";
 }

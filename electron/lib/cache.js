@@ -16,7 +16,7 @@ api.init = function init(callback) {
   memory.put(config.cache.ble.advertising, {advertising: false});
   memory.put(config.cache.ble.client, {client: null});
   memory.put(config.cache.ble.subscribed, {subscribed: null});
-  memory.put(config.cache.notifications, {"com.google.android.talk:Solder Byte":[{"appName":"Hangouts","packageName":"com.google.android.talk","name":"Solder Byte","contact":"jareddelacruz@gmail.com","message":"Hello, world!","created":1463637307880,"id":0,"key":"com.google.android.talk:Solder Byte"}]});
+  memory.put(config.cache.notifications, {});
   memory.put(config.cache.sockets, []);
 
   log.info('Cache initialized');

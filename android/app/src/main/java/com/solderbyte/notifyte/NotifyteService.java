@@ -190,14 +190,14 @@ public class NotifyteService extends Service {
 
             JSONObject json = new JSONObject();
             try {
-                json.put("appName", appName);
-                json.put("packageName", packageName);
-                json.put("name", name);
-                json.put("contact", contact);
-                json.put("group", group);
-                json.put("message", message);
-                json.put("created", created);
-                json.put("id", id);
+                json.put(Intents.JSON_APP_NAME, appName);
+                json.put(Intents.JSON_PACKAGE_NAME, packageName);
+                json.put(Intents.JSON_NAME, name);
+                json.put(Intents.JSON_CONTACT, contact);
+                json.put(Intents.JSON_GROUP, group);
+                json.put(Intents.JSON_MESSAGE, message);
+                json.put(Intents.JSON_CREATED, created);
+                json.put(Intents.JSON_ID, id);
             }
             catch(JSONException e) {
                 Log.e(LOG_TAG, "Error: creating JSON" + e);

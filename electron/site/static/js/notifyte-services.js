@@ -17,7 +17,9 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
 
     // socket.io events
     socket.on('onConnect', function(data) {
-      socket.emit('/api/bluetooth/', {method: 'GET'});
+      $rootScope.$apply(function() {
+        socket.emit('/api/bluetooth/', {method: 'GET'});
+      });
     });
 
     socket.on('/api/bluetooth/', function(data) {
@@ -110,14 +112,16 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       }
     };
 
-    var pNotifcation = function pNotifcation(message, key) {
+    var pNotifcation = function pNotifcation(message, n) {
       var notification = {
         appName: 'NotifyteDesktop',
         packageName: 'notifyte.desktop',
-        key: key,
+        key: n.key,
         name: 'Me',
         message: message,
-        created: Date.now()
+        created: Date.now(),
+        replyPackageName: n.packageName,
+        replyName: n.name
       };
 
       notificationsAPI.post(notification, function() {
@@ -138,8 +142,8 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       setCurrentNotification: function setCurrentNotification(key) {
         sCurrentNotification(key);
       },
-      postNotifcation: function postNotifcation(message, key) {
-        pNotifcation(message, key);
+      postNotifcation: function postNotifcation(message, notification) {
+        pNotifcation(message, notification);
       }
     };
   }
