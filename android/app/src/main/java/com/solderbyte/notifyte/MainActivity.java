@@ -131,9 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!name.equals(preferences.STRING_DEFAULT)) {
             entry = name;
-            if(text_device != null) {
-                text_device.setText(getString(R.string.text_device) + " " + entry);
-            }
+            MainActivity.this.setTextDevice(getString(R.string.text_device), entry.toString());
         }
         if(!addr.equals(preferences.STRING_DEFAULT)) {
             value = addr;
@@ -216,14 +214,19 @@ public class MainActivity extends AppCompatActivity {
                 preferences.saveString(preferences.DEVICE_ADDR, value.toString());
 
                 Log.d(LOG_TAG, "Device selected: " + entry + ":" + value);
-                if(text_device != null) {
-                    text_device.setText(getString(R.string.text_device) + " " + entry);
-                }
+                MainActivity.this.setTextDevice(getString(R.string.text_device), entry.toString());
             }
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void setTextDevice(String state, String device) {
+        Log.d(LOG_TAG, "setTextDevice: " + state + ":" + device);
+        if(text_device != null) {
+            text_device.setText(state + " " + device);
+        }
     }
 
     private BroadcastReceiver serviceStopReceiver = new BroadcastReceiver() {
@@ -264,9 +267,11 @@ public class MainActivity extends AppCompatActivity {
             }
             if(message.equals(Intents.INTENT_BLUETOOTH_DISCONNECTED)) {
                 Log.d(LOG_TAG, "disconnected to device");
+                MainActivity.this.setTextDevice(getString(R.string.text_device), entry.toString());
             }
             if(message.equals(Intents.INTENT_BLUETOOTH_CONNECTED_DESKTOP)) {
                 Log.d(LOG_TAG, "connected to notifyte desktop app");
+                MainActivity.this.setTextDevice(getString(R.string.text_connected), entry.toString());
             }
             if(message.equals(Intents.INTENT_BLUETOOTH_SCAN_STOPPED)) {
                 MainActivity.this.closeProgressScan();

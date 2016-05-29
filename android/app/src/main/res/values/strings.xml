@@ -15,11 +15,12 @@
     <string name="text_scan">Scan for devices</string>
     <string name="button_scan">Scan</string>
     <string name="text_device">Device:</string>
+    <string name="text_connected">Connected:</string>
     <string name="text_device_none">None</string>
     <string name="button_connect">Connect</string>
 
     <string name="dialog_access_title">Enable Notification Access</string>
-    <string name="dialog_access_message">In order for Notifyte to receive notification, you must enable notification access for notifyte</string>
+    <string name="dialog_access_message">In order for Notifyte to receive notification, you must enable notification access for Notifyte</string>
     <string name="dialog_access_open">Enable</string>
     <string name="dialog_access_close">Close</string>
 

@@ -32,6 +32,7 @@ public class NotifyteService extends Service {
 
     // states
     private boolean bleEnabled = false;
+    private boolean isConnected = false;
 
     @Nullable
     @Override
@@ -68,20 +69,20 @@ public class NotifyteService extends Service {
     public void createNotification(boolean connected) {
         Log.d(LOG_TAG, "createNotification: " + connected);
         Intent stopService =  new Intent(Intents.INTENT_SERVICE_STOP);
-        //Intent startActivity = new Intent(this, OpenFitActivity.class);
-        //PendingIntent startIntent = PendingIntent.getActivity(this, 0, startActivity, PendingIntent.FLAG_NO_CREATE);
+        Intent startActivity = new Intent(this, MainActivity.class);
+        PendingIntent startIntent = PendingIntent.getActivity(this, 0, startActivity, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent stopIntent = PendingIntent.getBroadcast(this, 0, stopService, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this);
         nBuilder.setSmallIcon(R.mipmap.ic_launcher);
         nBuilder.setContentTitle(getString(R.string.notification_title));
-        if(connected) {
+        if(connected || isConnected) {
             nBuilder.setContentText(getString(R.string.notification_connected));
         }
         else {
             nBuilder.setContentText(getString(R.string.notification_disconnected));
         }
-        //nBuilder.setContentIntent(startIntent);
+        nBuilder.setContentIntent(startIntent);
         nBuilder.setAutoCancel(true);
         nBuilder.setOngoing(true);
         nBuilder.addAction(R.mipmap.ic_launcher, getString(R.string.notification_close), stopIntent);
@@ -127,7 +128,7 @@ public class NotifyteService extends Service {
             //sendUIPreferences();
 
             // auto connectBle
-            bluetoothLeService.connectRfcomm();
+            //bluetoothLeService.connectRfcomm();
         }
 
         @Override
@@ -236,17 +237,18 @@ public class NotifyteService extends Service {
             if(message.equals(Intents.INTENT_BLUETOOTH_SCAN_STOPPED)) {
                 Log.d(LOG_TAG, "Bluetooth scanning stopped");
             }
-            if(message.equals(Intents.INTENT_BLUETOOTH_NOTIFICATION)) {
-//                Log.d(LOG_TAG, "Bluetooth notification");
-//                String data = intent.getStringExtra(Intents.INTENT_EXTRA_DATA);
-//                JSONObject json = null;
-//                try {
-//                    json = new JSONObject(data);
-//                }
-//                catch(JSONException e) {
-//                    Log.e(LOG_TAG, "Error: converting string to json" + e);
-//                    e.printStackTrace();
-//                }
+            if(message.equals(Intents.INTENT_BLUETOOTH_CONNECTED)) {
+                Log.d(LOG_TAG, "connected to device");
+                NotifyteService.this.createNotification(true);
+            }
+            if(message.equals(Intents.INTENT_BLUETOOTH_DISCONNECTED)) {
+                Log.d(LOG_TAG, "disconnected to device");
+                isConnected = false;
+                NotifyteService.this.createNotification(false);
+            }
+            if(message.equals(Intents.INTENT_BLUETOOTH_CONNECTED_DESKTOP)) {
+                isConnected = true;
+                Log.d(LOG_TAG, "connected to notifyte desktop app");
             }
         }
     };

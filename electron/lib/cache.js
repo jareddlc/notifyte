@@ -40,6 +40,7 @@ api.put = function put(key, data) {
       client: memory.get(config.cache.ble.client).client,
       subscribed: memory.get(config.cache.ble.subscribed).subscribed
     });
+    socket.emit('/api/bluetooth/', memory.get(config.cache.ble.bluetooth));
   }
 
   if(key === config.cache.notifications) {
