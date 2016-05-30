@@ -7,6 +7,12 @@ body {
 /*font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 text-rendering: optimizeLegibility;*/
 
+.container-reset {
+  /*15px from bootstrap container*/
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
 /* Sidebar */
 .sidebar {
   position: fixed;
@@ -14,7 +20,7 @@ text-rendering: optimizeLegibility;*/
   bottom: 0;
   left: 0;
   flex: 0 0 25%;
-  max-width: 240px; /* this is used in .main */
+  max-width: 240px; /* used by other classes */
   min-width: 240px;
   z-index: 1000;
   display: block;
@@ -77,25 +83,25 @@ text-rendering: optimizeLegibility;*/
   top: 0;
   bottom: 0;
   right: 0;
-  left: 240px; /* this is used in .sidebar */
-  z-index: 1000;
-  display: block;
-  overflow-y: scroll;
+  left: 240px; /* .sidebar width */
 }
 
 /* Main navigation */
 .nav-main {
-  margin-right: -15px;
-  margin-bottom: 15px;
-  margin-left: -15px;
   background-color: #d4d8d8;
   padding: 10px 20px;
-  height: 40px;
+  height: 40px; /* used by other classes */
   max-height: 40px;
 }
 
 .nav-main > .title {
   font-weight: bold;
+}
+
+.setting-area {
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .setting-title {
@@ -114,17 +120,27 @@ text-rendering: optimizeLegibility;*/
 }
 
 .chat-area {
-  height: 100%;
-  overflow: auto;
+  position: fixed;
+  top: 40px; /* .nav-main height */
+  bottom: 50px; /* .chat-input height */
+  left: 240px; /* .sidebar width */
+  right: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  overflow-y: scroll;
 }
 
 .chat-input {
-  position:fixed;
+  position: fixed;
   bottom: 0;
+  height: 50px; /* used by other classes */
+  padding-top: 1px;
   padding-right: 10px;
   padding-left: 10px;
   padding-bottom: 10px;
-  margin-left: -15px; /*15px from bootstrap container*/
+  background-color: #ECF0F1;
+  margin-right: 0px;
 }
 
 .chat-message-super {

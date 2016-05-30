@@ -1,10 +1,10 @@
 <div class="container-fluid" ng-controller="notificationController">
-  <div class="nav-main">
+  <div class="container-reset nav-main">
     <div class="title text-center">[[currentNotification[0].appName]]: [[currentNotification[0].name]]</div>
   </div>
 
   <div class="chat-area">
-    <div class="chat-message-container" ng-repeat="(key, value) in currentNotification">
+    <div ng-repeat="(key, value) in currentNotification">
       <div class="chat-message-super">
         <span class="chat-message-name">[[value.name]]</span> <span class="chat-message-timestamp">[[value.created | date:'h:mm a']]</span>
       </div>
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="chat-input">
+  <div class="container-reset chat-input">
     <form class="input-group" ng-submit="send(form.message)">
       <input type="text" class="form-control" ng-model="form.message">
       <span class="input-group-btn">

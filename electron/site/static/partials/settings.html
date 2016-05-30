@@ -1,23 +1,23 @@
 <div class="container-fluid" ng-controller="bluetoothController">
-  <div class="nav-main">
+  <div class="container-reset nav-main">
     <div class="text-center">Settings</div>
   </div>
 
-  <div class="settings-area">
-    <div class="setting-container">
-      <div class="setting-title">
-        Bluetooth
-      </div>
-      <div class="setting-item">
-        State: <span class="label label-success">[[bluetooth.state]]</span>
-      </div>
-      <div class="setting-item">
-        Discoverable: <span class="label label-success">[[bluetooth.advertising]]</span>
-      </div>
-      <div class="setting-item">
-        Connected: <span ng-show="bluetooth.client != null" class="label label-success">[[bluetooth.client]]</span> <span ng-hide="bluetooth.client != null" class="label label-danger">none</span>
-      </div>
+  <div class="container-reset setting-area">
+    <div class="setting-title">
+      Bluetooth
     </div>
-
+    <div class="setting-item">
+      State: <span class="label label-success">[[bluetooth.state]]</span>
+    </div>
+    <div class="setting-item">
+      Discoverable: <span class="label label-success">[[bluetooth.advertising]]</span>
+    </div>
+    <div class="setting-item">
+      Connected: <span ng-show="bluetooth.client != null" class="label label-success">[[bluetooth.client]]</span> <span ng-hide="bluetooth.client != null" class="label label-danger">none</span>
+    </div>
+    <div class="setting-item">
+      Subscribed: <span ng-show="bluetooth.subscribed != null" class="label label-success">[[bluetooth.subscribed]]</span> <span ng-hide="bluetooth.subscribed != null" class="label label-danger">none</span>
+    </div>
   </div>
 </div>
