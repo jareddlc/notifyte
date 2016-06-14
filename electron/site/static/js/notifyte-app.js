@@ -1,4 +1,4 @@
-var notifyte = angular.module('notifyteApp', ['ngRoute', 'notifyteControllers', 'notifyteServices']);
+var notifyte = angular.module('notifyteApp', ['ngRoute', 'luegg.directives', 'notifyteControllers', 'notifyteServices']);
 notifyte.config(function($interpolateProvider) {
   $interpolateProvider.startSymbol('[[').endSymbol(']]');
 });

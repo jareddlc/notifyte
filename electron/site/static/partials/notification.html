@@ -3,7 +3,7 @@
     <div class="title text-center">[[currentNotification[0].appName]]: [[currentNotification[0].name]]</div>
   </div>
 
-  <div class="chat-area">
+  <div class="chat-area" scroll-glue>
     <div ng-repeat="(key, value) in currentNotification">
       <div class="chat-message-super">
         <span class="chat-message-name">[[value.name]]</span> <span class="chat-message-timestamp">[[value.created | date:'h:mm a']]</span>

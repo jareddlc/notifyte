@@ -57,6 +57,9 @@ text-rendering: optimizeLegibility;*/
   padding: 10px 20px;
   cursor: pointer;
   max-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .active {
@@ -92,6 +95,9 @@ text-rendering: optimizeLegibility;*/
   padding: 10px 20px;
   height: 40px; /* used by other classes */
   max-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-main > .title {
@@ -144,7 +150,9 @@ text-rendering: optimizeLegibility;*/
 }
 
 .chat-message-super {
-
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-message-name {

@@ -13,7 +13,8 @@ var ANGULAR = {
       './bower_components/angular-resource/angular-resource.min.js.map',
       './bower_components/angular-route/angular-route.js',
       './bower_components/angular-route/angular-route.min.js',
-      './bower_components/angular-route/angular-route.min.js.map'
+      './bower_components/angular-route/angular-route.min.js.map',
+      './bower_components/angular-scroll-glue/src/scrollglue.js'
     ],
     dest: './site/static/vendors/js'
   }

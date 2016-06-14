@@ -54,7 +54,9 @@ notifyteControllers.controller('notificationController',  ['$rootScope', '$scope
 
     $scope.send = function send(message) {
       if($scope.currentNotification.length > 0) {
-        notificationService.postNotifcation(message, $scope.currentNotification[0]);
+        if(message) {
+          notificationService.postNotifcation(message, $scope.currentNotification[0]);
+        }
       }
 
       delete $scope.form;
