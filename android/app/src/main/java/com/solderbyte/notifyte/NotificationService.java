@@ -207,6 +207,16 @@ public class NotificationService extends NotificationListenerService {
             // contact: n/a
             // message: message or view text big text
 
+            try {
+                if(message.matches(".*(\\d+).new messages.*") || NOTIFICATION_TEXT.matches(".*(\\d+).new messages.*")) {
+                    Log.d(LOG_TAG, "ignoring message");
+                    return;
+                }
+            }
+            catch(Exception e) {
+                Log.w(LOG_TAG, "regex error: " + e.getMessage());
+            }
+
             String[] split;
             if(title != null) {
                 // group message
@@ -235,11 +245,11 @@ public class NotificationService extends NotificationListenerService {
             if(NOTIFICATION_BIG_TEXT != null) {
                 MESSAGE = NOTIFICATION_BIG_TEXT;
             }
-            else if(message != null) {
-                MESSAGE = message;
+            else if(NOTIFICATION_TEXT != null) {
+                MESSAGE = NOTIFICATION_TEXT;
             }
             else {
-                MESSAGE = NOTIFICATION_TEXT;
+                MESSAGE = message;
             }
         }
         else {
@@ -260,6 +270,8 @@ public class NotificationService extends NotificationListenerService {
             }
         }
 
+        Log.d(LOG_TAG, "before remote ");
+
         RemoteInput[] remoteInputs = this.getRemoteInputs(notification);
         if(remoteInputs != null) {
             NotifyteNotification notifyte = new NotifyteNotification();
@@ -276,6 +288,7 @@ public class NotificationService extends NotificationListenerService {
             notifyte.pendingIntent = notification.contentIntent;
             notifyte.remoteInputs.addAll(Arrays.asList(remoteInputs));
             listNotifyte.add(notifyte);
+            Log.d(LOG_TAG, "remoteInputs: " + remoteInputs.length);
         }
 
         Intent msg = new Intent(Intents.INTENT_NOTIFICATION);
@@ -288,6 +301,7 @@ public class NotificationService extends NotificationListenerService {
         msg.putExtra(Intents.INTENT_NOTIFICATION_CREATED, CREATED);
         msg.putExtra(Intents.INTENT_NOTIFICATION_ID, ID);
 
+        Log.d(LOG_TAG, "sendBroadcast");
         context.sendBroadcast(msg);
     }
 

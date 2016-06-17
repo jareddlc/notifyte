@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     // states
     private boolean bleEnabled = false;
+    private boolean isConnecting = false;
 
     // UI elements
     private static Button button_bluetooth = null;
@@ -175,15 +176,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProgressConnecting() {
-        progress_connecting = new ProgressDialog(MainActivity.this);
-        progress_connecting.setMessage(getString(R.string.progress_dialog_connecting));
-        progress_connecting.setCancelable(false);
-        progress_connecting.show();
+        if(isConnecting == false) {
+            progress_connecting = new ProgressDialog(MainActivity.this);
+            progress_connecting.setMessage(getString(R.string.progress_dialog_connecting));
+            progress_connecting.setCancelable(false);
+            progress_connecting.show();
+            isConnecting = true;
+        }
     }
 
     private void closeProgressConnecting() {
-        if(progress_connecting != null) {
-            progress_connecting.dismiss();
+        if(isConnecting == true) {
+            if(progress_connecting != null) {
+                progress_connecting.dismiss();
+            }
+            isConnecting = false;
         }
     }
 

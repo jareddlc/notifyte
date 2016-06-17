@@ -273,6 +273,7 @@ public class NotifyteService extends Service {
                 String device = intent.getStringExtra(Intents.INTENT_EXTRA_DATA);
                 bluetoothLeService.setAddress(device);
                 bluetoothLeService.connectBle(device);
+                bluetoothLeService.setReconnect(true);
                 Log.d(LOG_TAG, "Connecting to: " + device);
             }
         }

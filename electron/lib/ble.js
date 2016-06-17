@@ -6,7 +6,6 @@ var log = require('./logger');
 
 var api = module.exports = {};
 
-
 api.init = function init(data, callback) {
   if(!data || !data.cache) {
     throw new Error('Error: cannot initialize without cache');
@@ -42,7 +41,8 @@ api.startAdvertising =  function startAdvertising(callback) {
   log.info('BLE: startAdvertising');
   bleno.startAdvertising(config.name, config.serviceUuid);
   api.cache.put(config.cache.ble.advertising, {advertising: true});
-  if(callback) {
+  if(callback && !api._callbackCalled) {
+    api._callbackCalled = true;
     callback(null);
   }
 };
@@ -51,7 +51,8 @@ api.stopAdvertising =  function stopAdvertising(callback) {
   log.info('BLE: stopAdvertising');
   bleno.stopAdvertising();
   api.cache.put(config.cache.ble.advertising, {advertising: false});
-  if(callback) {
+  if(callback && !api._callbackCalled) {
+    api._callbackCalled = true;
     callback(null);
   }
 };
