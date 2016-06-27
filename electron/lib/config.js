@@ -19,7 +19,7 @@ config.logging = {
 };
 
 config.window = {
-  title: config.name,
+  title: 'Notifyte',
   width: 800,
   height: 600,
   minWidth: 600,

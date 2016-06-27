@@ -25,6 +25,12 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
     socket.on('/api/bluetooth/', function(data) {
       $rootScope.$apply(function() {
         if(!angular.equals(bluetooth, data)) {
+          if(data.client !== null && data.client !== bluetooth.client && data.subscribed) {
+            var connected = new Notification('Notifyte', {
+              body: 'Connected to Phone'
+            });
+          }
+
           angular.copy(data, bluetooth);
         }
       });

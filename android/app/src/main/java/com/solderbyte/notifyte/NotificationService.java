@@ -270,8 +270,6 @@ public class NotificationService extends NotificationListenerService {
             }
         }
 
-        Log.d(LOG_TAG, "before remote ");
-
         RemoteInput[] remoteInputs = this.getRemoteInputs(notification);
         if(remoteInputs != null) {
             NotifyteNotification notifyte = new NotifyteNotification();
