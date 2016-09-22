@@ -34,10 +34,16 @@
     <div class="sidebar" ng-controller="notificationController">
       <div class="container-fluid">
         <div class="nav-sidebar">
-          <div class="title">Notifyte <i class="fa fa-cog nav-icon-settings pull-right" aria-hidden="true" ng-click="showSettings()"></i></div>
-          <div class="sub-title">Phone Notifications</div>
+          <div class="title" ng-controller="bluetoothController">
+            <span>Notifyte</span>
+            <i class="fa fa-cog nav-icon pointer pull-right" ng-click="showSettings()"></i>
+            <i class="fa nav-icon pull-right" ng-class="{'fa-bluetooth': bluetooth.subscribed != null, 'fa-bluetooth-b': bluetooth.subscribed == null}"></i>
+          </div>
+          <div class="sub-title">
+            <span>Phone Notifications</span>
+          </div>
           <div class="notification" ng-class="{'active': isActive(key) == true}" ng-repeat="(key, value) in notifications" ng-click="showNotification(key)">
-            <i class="fa fa-mobile nav-icon" aria-hidden="true"></i> [[value[0].name]]
+            <i class="fa fa-mobile nav-icon"></i> [[value[0].name]]
           </div>
         </div>
       </div>

@@ -70,8 +70,11 @@ text-rendering: optimizeLegibility;*/
   background-color: #46637f;
 }
 
-.nav-icon-settings {
+.nav-icon {
   font-size: 20px;
+}
+
+.pointer {
   cursor: pointer;
 }
 

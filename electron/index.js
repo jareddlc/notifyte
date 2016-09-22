@@ -9,8 +9,6 @@ var MenuItem = electron.MenuItem;
 var notifyte = require('./lib');
 var remote = electron.remote;
 
-console.dir(electron);
-
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
   app.quit();
