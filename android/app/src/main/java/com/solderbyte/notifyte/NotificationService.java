@@ -271,7 +271,8 @@ public class NotificationService extends NotificationListenerService {
         }
 
         RemoteInput[] remoteInputs = this.getRemoteInputs(notification);
-        if(remoteInputs != null) {
+        NotificationCompat.Action action = this.getAction(notification);
+        if(remoteInputs != null || action != null) {
             NotifyteNotification notifyte = new NotifyteNotification();
             notifyte.appName = APP_NAME;
             notifyte.packageName = PACKAGE_NAME;
@@ -283,6 +284,7 @@ public class NotificationService extends NotificationListenerService {
             notifyte.id = ID;
             notifyte.tag = tag;
             notifyte.bundle = extras;
+            notifyte.action = action;
             notifyte.pendingIntent = notification.contentIntent;
             notifyte.remoteInputs.addAll(Arrays.asList(remoteInputs));
             listNotifyte.add(notifyte);
@@ -400,6 +402,21 @@ public class NotificationService extends NotificationListenerService {
         return remoteInputs;
     }
 
+    public NotificationCompat.Action getAction(Notification notification) {
+        Log.d(LOG_TAG, "getAction");
+        RemoteInput[] remoteInputs = null;
+        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender(notification);
+        Log.d(LOG_TAG, "wearableExtender: " + wearableExtender);
+        if(wearableExtender.getActions().size() > 0) {
+            for(NotificationCompat.Action action : wearableExtender.getActions()) {
+                if(action.title.toString().toLowerCase().contains("reply")) {
+                    return action;
+                }
+            }
+        }
+        return null;
+    }
+
     public android.app.RemoteInput[] getRemoteInputsFromBundle(Bundle bundle) {
         android.app.RemoteInput[] remoteInputs = null;
 
@@ -482,21 +499,42 @@ public class NotificationService extends NotificationListenerService {
 
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Bundle bundle = notifyte.bundle;
+        // method 1
+        //Bundle bundle = notifyte.bundle;
+        // method 2
+        Bundle bundle = new Bundle();
         int i = 0;
-        for(RemoteInput remoteInput : notifyte.remoteInputs){
+
+        // method 1
+        /*for(RemoteInput remoteInput : notifyte.remoteInputs){
             this.getRemoteInputInfo(remoteInput);
             remoteInputs[i] = remoteInput;
             Log.d(LOG_TAG, "remoteInput: " + remoteInput.getResultKey());
             bundle.putCharSequence(remoteInputs[i].getResultKey(), message);
             i++;
         }
-        RemoteInput.addResultsToIntent(remoteInputs, intent, bundle);
-        try {
+        RemoteInput.addResultsToIntent(remoteInputs, intent, bundle);*/
+        // method 2
+        for(RemoteInput remoteIn : notifyte.action.getRemoteInputs()) {
+            Log.d(LOG_TAG, "remoteInput: " + remoteIn.getLabel());
+            bundle.putCharSequence(remoteIn.getResultKey(), message);
+        }
+        RemoteInput.addResultsToIntent(notifyte.action.getRemoteInputs(), intent, bundle);
+
+        // method 1
+        /*try {
             Log.d(LOG_TAG, "trying to send");
             notifyte.pendingIntent.send(this, 0, intent);
         }
         catch (PendingIntent.CanceledException e) {
+            Log.e(LOG_TAG, "Error: replyToNotification " + e);
+            e.printStackTrace();
+        }*/
+        // method 2
+        try {
+            notifyte.action.actionIntent.send(this, 0, intent);
+        }
+        catch(PendingIntent.CanceledException e) {
             Log.e(LOG_TAG, "Error: replyToNotification " + e);
             e.printStackTrace();
         }

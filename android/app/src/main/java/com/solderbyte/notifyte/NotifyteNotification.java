@@ -2,6 +2,7 @@ package com.solderbyte.notifyte;
 
 import android.app.PendingIntent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class NotifyteNotification {
     public ArrayList<RemoteInput> remoteInputs = new ArrayList<>();
     public ArrayList<NotifyteNotification> pages = new ArrayList<>();
     public Bundle bundle;
+    public NotificationCompat.Action action;
     public String tag;
 
     public String appName = null;

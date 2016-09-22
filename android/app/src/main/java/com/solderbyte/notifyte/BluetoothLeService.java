@@ -1059,6 +1059,7 @@ public class BluetoothLeService extends Service {
                 try {
                     long timeDiff =  Calendar.getInstance().getTimeInMillis() - timeStart;
                     Log.d(LOG_TAG, "Reconnecting Elapsed time: " + timeDiff / 1000);
+                    BluetoothLeService.this.disconnectBle();
                     BluetoothLeService.this.connectBle(bluetoothAddress);
                     Thread.sleep(BluetoothLeService.this.attemptReconnect());
                 }
@@ -1075,20 +1076,20 @@ public class BluetoothLeService extends Service {
     }
 
     public long attemptReconnect() {
-        if(RECONNECT_ATTEMPTS < 6) {
-            // every 10 secs for 1 min
-            return 10000L;
+        if(RECONNECT_ATTEMPTS < 4) {
+            // every 15 secs for 1 min
+            return 15000L;
         }
-        else if(RECONNECT_ATTEMPTS < 11) {
+        else if(RECONNECT_ATTEMPTS < 9) {
             // every 1 min for 5 mins
             return 60000L;
         }
-        else if(RECONNECT_ATTEMPTS < 23) {
+        else if(RECONNECT_ATTEMPTS < 21) {
             // every 5 min for 1 hr
             return 300000L;
         }
 
-        if(RECONNECT_ATTEMPTS > 23) {
+        if(RECONNECT_ATTEMPTS > 21) {
             RECONNECT_ATTEMPTS = 0;
             BluetoothLeService.this.stopReconnectBle();
         }
