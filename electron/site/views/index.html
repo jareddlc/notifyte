@@ -43,7 +43,9 @@
             <span>Phone Notifications</span>
           </div>
           <div class="notification" ng-class="{'active': isActive(key) == true}" ng-repeat="(key, value) in notifications" ng-click="showNotification(key)">
-            <i class="fa fa-mobile nav-icon"></i> [[value[0].name]]
+            <i class="fa fa-close nav-icon nav-icon-close pull-right" ng-click="deleteNotification($event, key)"></i>
+            <i class="fa fa-mobile nav-icon"></i>
+            <span>[[value[0].name]]</span>
           </div>
         </div>
       </div>

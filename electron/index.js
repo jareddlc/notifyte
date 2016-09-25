@@ -23,7 +23,13 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/site/views/index.html');
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
+
+  mainWindow.on('focus', function(e) {
+  });
+
+  mainWindow.on('blur', function(e) {
+  });
 
   // Menu
   var template = [{

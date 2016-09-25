@@ -67,7 +67,8 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
     // $resource endpoints
     var notificationsAPI = $resource('http://localhost:7777/api/notifications', {}, {
       get: {method: 'GET', isArray: false},
-      post: {method: 'POST', isArray: false}
+      post: {method: 'POST', isArray: false},
+      del: {method: 'DELETE', isArray: false}
     });
 
     // socket.io events
@@ -137,6 +138,21 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       });
     };
 
+    var dNotification = function dNotification(key) {
+      var notification = {
+        key: key
+      };
+
+      if(notifications[key]) {
+        delete notifications[key];
+      }
+      notificationsAPI.del(notification, function() {
+        console.log('notification deleted');
+      }, function(err) {
+        console.log('err sending', err);
+      });
+    };
+
     // exports
     return {
       getNotifications: function getNotifications() {
@@ -150,6 +166,9 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       },
       postNotifcation: function postNotifcation(message, notification) {
         pNotifcation(message, notification);
+      },
+      delNotifcation: function delNotifcation(key) {
+        dNotification(key);
       }
     };
   }

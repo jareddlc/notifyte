@@ -40,7 +40,7 @@ text-rendering: optimizeLegibility;*/
 .nav-sidebar > .title {
   color: #fff;
   background-color: #2C3E50;
-  padding: 10px 20px;
+  padding: 10px 5px 10px 20px;
   max-height: 40px;
 }
 
@@ -54,7 +54,7 @@ text-rendering: optimizeLegibility;*/
 
 .nav-sidebar > .notification {
   color: #fff;
-  padding: 10px 20px;
+  padding: 10px 5px 10px 20px;
   cursor: pointer;
   max-height: 40px;
   white-space: nowrap;
@@ -70,10 +70,6 @@ text-rendering: optimizeLegibility;*/
   background-color: #46637f;
 }
 
-.nav-icon {
-  font-size: 20px;
-}
-
 .pointer {
   cursor: pointer;
 }
@@ -82,6 +78,15 @@ text-rendering: optimizeLegibility;*/
   font-size: 18px;
   padding-right: 5px;
 }
+
+.nav-icon-close {
+  color: rgba(255, 255, 255, .1);
+}
+
+.nav-icon-close:hover {
+  color: #fff;
+}
+
 
 /* Main content */
 .main {
@@ -114,12 +119,24 @@ text-rendering: optimizeLegibility;*/
 }
 
 .setting-title {
+  font-size: 32px;
   font-weight: bold;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
 }
 
 .setting-item {
-  padding-bottom: 2px;
+  font-size: 24px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid #d4d8d8;
+}
+
+.setting-item-icon {
+  font-size: 64px;
+}
+
+.setting-sub-text {
+  font-size: 16px;
 }
 
 .setting-value {

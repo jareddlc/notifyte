@@ -8,16 +8,48 @@
       Bluetooth
     </div>
     <div class="setting-item">
-      State: <span class="label label-success">[[bluetooth.state]]</span>
+      <div class="row">
+        <div class="col-xs-9">
+          <div>State</div>
+          <div class="setting-sub-text">The computers bluetooth power state state</div>
+        </div>
+        <div class="col-xs-3">
+          <i class="fa setting-item-icon pull-right" ng-class="{'fa-toggle-on': bluetooth.state == 'poweredOn', 'fa-toggle-off': bluetooth.state == 'poweredOff'}"></i>
+        </div>
+      </div>
     </div>
     <div class="setting-item">
-      Discoverable: <span class="label label-success">[[bluetooth.advertising]]</span>
+      <div class="row">
+        <div class="col-xs-9">
+          <div>Discoverable</div>
+          <div class="setting-sub-text">The computers bluetooth broadcasting availibility</div>
+        </div>
+        <div class="col-xs-3">
+          <i class="fa setting-item-icon pull-right" ng-class="{'fa-toggle-on': bluetooth.advertising == true, 'fa-toggle-off': bluetooth.advertising == false}"></i>
+        </div>
+      </div>
     </div>
     <div class="setting-item">
-      Connected: <span ng-show="bluetooth.client != null" class="label label-success">[[bluetooth.client]]</span> <span ng-hide="bluetooth.client != null" class="label label-danger">none</span>
+      <div class="row">
+        <div class="col-xs-9">
+          <div>Connected <span ng-show="bluetooth.client != null"> | Device address: [[bluetooth.client]]</span></div>
+          <div class="setting-sub-text">The connection to a mobile device running the Notifyte app</div>
+        </div>
+        <div class="col-xs-3">
+          <i class="fa setting-item-icon pull-right" ng-class="{'fa-toggle-on': bluetooth.client != null, 'fa-toggle-off': bluetooth.client == null}"></i>
+        </div>
+      </div>
     </div>
     <div class="setting-item">
-      Subscribed: <span ng-show="bluetooth.subscribed != null" class="label label-success">[[bluetooth.subscribed]]</span> <span ng-hide="bluetooth.subscribed != null" class="label label-danger">none</span>
+      <div class="row">
+        <div class="col-xs-9">
+          <div>Subscribed</div>
+          <div class="setting-sub-text">The computer is ready to receive notifications from the Notifyte app</div>
+        </div>
+        <div class="col-xs-3">
+          <i class="fa setting-item-icon pull-right" ng-class="{'fa-toggle-on': bluetooth.subscribed != null, 'fa-toggle-off': bluetooth.subscribed == null}"></i>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -71,6 +71,7 @@
     "worker"        : false,
     "wsh"           : false,
     "yui"           : false,
+    "predef"        : ["angular", "io"],
 
     "globals"       : {}
 }

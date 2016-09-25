@@ -43,6 +43,12 @@ notifyteControllers.controller('notificationController',  ['$rootScope', '$scope
       $location.path('/notification');
     };
 
+    $scope.deleteNotification = function deleteNotification($event, key) {
+      $event.stopPropagation();
+      notificationService.delNotifcation(key);
+      $location.path('/');
+    };
+
     $scope.isActive = function isActive(key) {
       if($scope.currentNotification.length > 0) {
         if($scope.currentNotification[0].key === key) {
@@ -58,7 +64,6 @@ notifyteControllers.controller('notificationController',  ['$rootScope', '$scope
           notificationService.postNotifcation(message, $scope.currentNotification[0]);
         }
       }
-
       delete $scope.form;
     };
 

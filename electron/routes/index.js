@@ -51,6 +51,8 @@ router.get('/api/notifications', notifications.getNotifications);
 
 router.post('/api/notifications', notifications.postNotifications);
 
+router.delete('/api/notifications', notifications.delNotifications);
+
 router.get('/api/sockets', sockets.getSockets);
 
 module.exports = router;

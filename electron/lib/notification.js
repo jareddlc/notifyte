@@ -92,3 +92,20 @@ api.sendNotification = function sendNotification(notification, callback) {
     }
   }
 };
+
+api.deleteNotification = function deleteNotification(key, callback) {
+  log.info('Notification: deleteNotification', key.key);
+  var notifications = api.get();
+  if(!key || !key.key) {
+    return callback(new Error('Error: no notification provided'));
+  }
+
+  if(notifications[key.key]) {
+    delete notifications[key.key];
+    callback(null);
+  }
+  else {
+    log.error('Notification: could not delete notification', key.key);
+    callback(new Error('Error: deleting notification not found'));
+  }
+};
