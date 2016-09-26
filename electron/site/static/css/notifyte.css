@@ -139,6 +139,10 @@ text-rendering: optimizeLegibility;*/
   font-size: 16px;
 }
 
+.setting-device-address {
+  font-size: 14px;
+}
+
 .setting-value {
   padding-left: 5px;
   color: #000;

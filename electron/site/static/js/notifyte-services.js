@@ -1,5 +1,6 @@
 var notifyteServices = angular.module('notifyteServices', ['ngResource']);
 var socket = io('http://localhost:7777');
+var _ = require('lodash');
 
 notifyteServices.factory('notifyteService', ['$rootScope', '$resource', '$timeout',
   function($rootScope, $resource, $timeout) {
@@ -61,8 +62,13 @@ notifyteServices.factory('bluetoothService', ['$rootScope', '$resource', '$timeo
   }
 ]);
 
-notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$timeout',
-  function($rootScope, $resource, $timeout) {
+notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$timeout', '$location',
+  function($rootScope, $resource, $timeout, $location) {
+
+    // main window focus
+    require('electron').ipcRenderer.on('focus', function(event, message) {
+      FOCUS = message;
+    });
 
     // $resource endpoints
     var notificationsAPI = $resource('http://localhost:7777/api/notifications', {}, {
@@ -79,6 +85,32 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
     socket.on('/api/notifications', function(data) {
       $rootScope.$apply(function() {
         if(!angular.equals(notifications, data)) {
+
+          var newNotifcations = angular.copy(data);
+          var oldNotifcations = angular.copy(notifications);
+
+          var n = getNotification(newNotifcations, oldNotifcations);
+          if(n === null) {
+            n = {
+              appName: 'Notifyte',
+              message: 'New message',
+              tag: 'none'
+            };
+          }
+          if(!FOCUS) {
+            var connected = new Notification(n.appName, {
+              body: n.message,
+              tag: n.key
+            });
+            connected.onclick = function(event) {
+              if(event && event.target && event.target.tag) {
+                $rootScope.$apply(function() {
+                  sCurrentNotification(event.target.tag);
+                  $location.path('/notification');
+                });
+              }
+            };
+          }
           angular.copy(data, notifications);
           updateCurrentNotification();
         }
@@ -89,6 +121,7 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
     var REFRESH_RATE = 5000;
     var notifications = {};
     var currentNotification = [];
+    var FOCUS = false;
 
     // refresh data
     var gNotifications = function gNotifications() {
@@ -151,6 +184,20 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
       }, function(err) {
         console.log('err sending', err);
       });
+    };
+
+    var getNotification = function getNotification(noti, old) {
+      var diff = _.reduce(noti, function(result, value, key) {
+        return _.isEqual(value, old[key]) ? result : result.concat(key);
+      }, []);
+
+      if(diff && diff.length === 1) {
+        return noti[diff][noti[diff].length-1];
+      }
+      else {
+        console.log('receiving bulk notifications');
+        return null;
+      }
     };
 
     // exports

@@ -25,10 +25,14 @@ app.on('ready', function() {
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
 
-  mainWindow.on('focus', function(e) {
+  mainWindow.on('focus', function() {
+    log.info('Window focused');
+    mainWindow.webContents.send('focus', true);
   });
 
-  mainWindow.on('blur', function(e) {
+  mainWindow.on('blur', function() {
+    log.info('Window lost focus');
+    mainWindow.webContents.send('focus', false);
   });
 
   // Menu

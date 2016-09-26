@@ -69,6 +69,7 @@ public class NotificationService extends NotificationListenerService {
         unregisterReceiver(serviceStopReceiver);
         unregisterReceiver(applicationsReceiver);
         unregisterReceiver(bluetoothLeReceiver);
+        NotificationService.this.stopSelf();
         super.onDestroy();
     }
 
