@@ -82,6 +82,7 @@ public class BluetoothLeService extends Service {
     private byte[] BYTE_BUFFER = null;
     ArrayList BYTE_RX_BUFFER = new ArrayList();
     private static int RECONNECT_ATTEMPTS = 0;
+    private static long RECCONECT_TIME = 0;
     public final static String EXTRA_DATA = "EXTRA_DATA";
     public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
     public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
@@ -148,7 +149,7 @@ public class BluetoothLeService extends Service {
 
             if(newState == BluetoothProfile.STATE_CONNECTED) {
                 isConnected = true;
-                RECONNECT_ATTEMPTS = 0;
+                BluetoothLeService.this.stopReconnectBle();
                 Log.d(LOG_TAG, "Connected");
                 BluetoothLeService.this.broadcastUpdate(ACTION_GATT_CONNECTED);
                 if(context != null) {
@@ -156,7 +157,6 @@ public class BluetoothLeService extends Service {
                     msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTED);
                     context.sendBroadcast(msg);
                 }
-                BluetoothLeService.this.stopReconnectBle();
                 // attempts to discover services after successful connection.
                 bluetoothGatt.discoverServices();
             }
@@ -169,7 +169,9 @@ public class BluetoothLeService extends Service {
                     msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_DISCONNECTED);
                     context.sendBroadcast(msg);
                 }
-                BluetoothLeService.this.reconnectBle();
+                if(!isReconnecting) {
+                    BluetoothLeService.this.reconnectBle();
+                }
             }
             Intent msg = new Intent(Intents.INTENT_BLUETOOTH);
             msg.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECTING);
@@ -455,7 +457,7 @@ public class BluetoothLeService extends Service {
 
     public void disconnectBle() {
         Log.d(LOG_TAG, "disconnectBle");
-        if(bluetoothAdapter == null || bluetoothGatt == null) {
+        if(bluetoothGatt == null) {
             Log.d(LOG_TAG, "bluetoothAdapter is null or bluetoothGatt is null");
             return;
         }
@@ -528,6 +530,7 @@ public class BluetoothLeService extends Service {
 
     public void stopReconnectBle() {
         Log.d(LOG_TAG, "stopReconnectBle");
+        RECONNECT_ATTEMPTS = 0;
         isReconnecting = false;
         if(reconnectThread != null) {
             reconnectThread.close();
@@ -1056,16 +1059,13 @@ public class BluetoothLeService extends Service {
             Log.d(LOG_TAG, "Reconnecting Bluetooth: " + timeStart);
 
             while(isReconnecting) {
-                try {
-                    long timeDiff =  Calendar.getInstance().getTimeInMillis() - timeStart;
-                    Log.d(LOG_TAG, "Reconnecting Elapsed time: " + timeDiff / 1000);
+                long lastAttempt = Calendar.getInstance().getTimeInMillis() - RECCONECT_TIME;
+
+                if(allowedReconnect(lastAttempt / 1000)) {
+                    Log.d(LOG_TAG, "Attempting to reconnect: " +  RECONNECT_ATTEMPTS);
+                    RECCONECT_TIME = Calendar.getInstance().getTimeInMillis();
                     BluetoothLeService.this.disconnectBle();
                     BluetoothLeService.this.connectBle(bluetoothAddress);
-                    Thread.sleep(BluetoothLeService.this.attemptReconnect());
-                }
-                catch(InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    return;
                 }
             }
         }
@@ -1075,27 +1075,33 @@ public class BluetoothLeService extends Service {
         }
     }
 
-    public long attemptReconnect() {
-        if(RECONNECT_ATTEMPTS < 4) {
-            // every 15 secs for 1 min
-            return 15000L;
+    public boolean allowedReconnect(long elapsed) {
+        boolean allowedReconnect = false;
+
+        if(elapsed > 30 && RECONNECT_ATTEMPTS < 4) {
+            // every 30 secs (2 min)
+            RECONNECT_ATTEMPTS += 1;
+            allowedReconnect = true;
         }
-        else if(RECONNECT_ATTEMPTS < 9) {
-            // every 1 min for 5 mins
-            return 60000L;
+        else if(elapsed > 60 && RECONNECT_ATTEMPTS < 9) {
+            // every 1 min (5 mins)
+            RECONNECT_ATTEMPTS += 1;
+            allowedReconnect = true;
         }
-        else if(RECONNECT_ATTEMPTS < 21) {
-            // every 5 min for 1 hr
-            return 300000L;
+        else if(elapsed > 300 && RECONNECT_ATTEMPTS < 21) {
+            // every 5 min (1 hr)
+            RECONNECT_ATTEMPTS += 1;
+            allowedReconnect = true;
         }
 
         if(RECONNECT_ATTEMPTS > 21) {
             RECONNECT_ATTEMPTS = 0;
+            Log.d(LOG_TAG, "reconnects attempts exceeded. giving up");
+            BluetoothLeService.this.disconnectBle();
             BluetoothLeService.this.stopReconnectBle();
+            allowedReconnect = false;
         }
 
-
-        RECONNECT_ATTEMPTS += 1;
-        return 10000L;
+        return allowedReconnect;
     }
 }
