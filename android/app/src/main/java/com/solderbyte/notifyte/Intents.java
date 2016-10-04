@@ -39,6 +39,7 @@ public class Intents {
     public static final String INTENT_NOTIFICATION_CONTACT = "com.solderbyte.notifyte.notification.contact";
     public static final String INTENT_NOTIFICATION_GROUP = "com.solderbyte.notifyte.notification.group";
     public static final String INTENT_NOTIFICATION_MESSAGE = "com.solderbyte.notifyte.notification.message";
+    public static final String INTENT_NOTIFICATION_REPLY = "com.solderbyte.notifyte.notification.reply";
     public static final String INTENT_NOTIFICATION_CREATED = "com.solderbyte.notifyte.notification.created";
     public static final String INTENT_NOTIFICATION_ID = "com.solderbyte.notifyte.notification.id";
 
@@ -57,4 +58,5 @@ public class Intents {
     public static final String JSON_ID = "id";
     public static final String JSON_REPLY_PACKAGE_NAME = "replyPackageName";
     public static final String JSON_REPLY_NAME = "replyName";
+    public static final String JSON_REPLY = "reply";
 }

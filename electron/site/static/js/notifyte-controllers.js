@@ -34,6 +34,24 @@ notifyteControllers.controller('notificationController',  ['$rootScope', '$scope
       }
     });
 
+    $scope.canReply = function canReply() {
+      if($scope.currentNotification[0] && $scope.currentNotification[0].reply === true) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    };
+
+    $scope.getPlaceholder = function getPlaceholder() {
+      if($scope.currentNotification[0] && $scope.currentNotification[0].reply === false) {
+        return 'This application does not support reply';
+      }
+      else {
+        return '';
+      }
+    };
+
     $scope.showSettings = function showSettings() {
       $location.path('/settings');
     };

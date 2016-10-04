@@ -7,10 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/electron .",
     "rebuild": "./node_modules/.bin/electron-rebuild",
-    "build-all": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --all --out=./build --version=1.2.2",
-    "build-osx": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=darwin --arch=x64 --out ./build --version 1.2.2 --overwrite",
-    "build-win": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=win32 --arch=ia32 --out ./build --version 1.2.2 --overwrite",
-    "build-lin": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=linux --arch=x64 --out=./build --version=1.2.2 --overwrite",
+    "build-osx": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=darwin --arch=x64 --out ./build --version 1.2.2 --overwrite --icon site/static/img/notifyte.icns",
+    "build-win": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=win32 --arch=ia32 --out ./build --version 1.2.2 --overwrite --icon site/static/img/notifyte.ico",
+    "build-lin": "./node_modules/.bin/electron-packager ./ --overwrite --app-version=$npm_package_version --name=Notifyte --platform=linux --arch=x64 --out=./build --version=1.2.2 --overwrite --icon site/static/img/notifyte.ico",
     "bower-install": "node_modules/.bin/bower install",
     "gulp-bower": "node_modules/.bin/gulp bower",
     "gulp": "node_modules/.bin/gulp"

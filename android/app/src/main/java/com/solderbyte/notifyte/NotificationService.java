@@ -301,6 +301,9 @@ public class NotificationService extends NotificationListenerService {
         msg.putExtra(Intents.INTENT_NOTIFICATION_MESSAGE, MESSAGE);
         msg.putExtra(Intents.INTENT_NOTIFICATION_CREATED, CREATED);
         msg.putExtra(Intents.INTENT_NOTIFICATION_ID, ID);
+        if(action != null) {
+            msg.putExtra(Intents.INTENT_NOTIFICATION_REPLY, true);
+        }
 
         Log.d(LOG_TAG, "sendBroadcast");
         context.sendBroadcast(msg);
@@ -321,6 +324,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public String getAppName(String packageName) {
+        Log.d(LOG_TAG, "getAppName");
         ApplicationInfo appInfo = null;
         try {
             appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
@@ -333,6 +337,7 @@ public class NotificationService extends NotificationListenerService {
 
 
     public boolean getViewNotification(Notification n, String packageName) {
+        Log.d(LOG_TAG, "getViewNotification");
         Resources resources = null;
         try {
             resources = packageManager.getResourcesForApplication(packageName);
@@ -419,6 +424,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public android.app.RemoteInput[] getRemoteInputsFromBundle(Bundle bundle) {
+        Log.d(LOG_TAG, "getRemoteInputsFromBundle");
         android.app.RemoteInput[] remoteInputs = null;
 
         for(String key : bundle.keySet()) {
@@ -453,6 +459,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public NotifyteNotification getNotifyte(JSONObject json) {
+        Log.d(LOG_TAG, "getNotifyte");
         String replyPackageName = null;
         String replyName = null;
         try {
@@ -542,6 +549,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     private void getRemoteInputInfo(RemoteInput remoteInput) {
+        Log.d(LOG_TAG, "getRemoteInputInfo");
         String resultKey = remoteInput.getResultKey();
         String label = remoteInput.getLabel().toString();
         Log.d(LOG_TAG, "resultKey: " + resultKey);
@@ -569,6 +577,7 @@ public class NotificationService extends NotificationListenerService {
     private BroadcastReceiver applicationsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(LOG_TAG, "applicationsReceiver");
             ArrayList<String> applications = intent.getStringArrayListExtra(Intents.INTENT_EXTRA_DATA);
             ListPackageNames = applications;
             Log.d(LOG_TAG, "Received listeningApps: " + applications.size());

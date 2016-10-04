@@ -165,11 +165,11 @@ text-rendering: optimizeLegibility;*/
   position: fixed;
   bottom: 0;
   height: 50px; /* used by other classes */
-  padding-top: 1px;
+  padding-top: 10px;
   padding-right: 10px;
   padding-left: 10px;
   padding-bottom: 10px;
-  background-color: #ECF0F1;
+  background-color: #d4d8d8;
   margin-right: 0px;
 }
 

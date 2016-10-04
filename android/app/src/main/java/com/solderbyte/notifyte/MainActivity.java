@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupUIListeners() {
+        Log.d(LOG_TAG, "setupUIListeners");
         button_bluetooth = (Button) findViewById(R.id.button_bluetooth);
         button_scan = (Button) findViewById(R.id.button_scan);
         button_connect = (Button) findViewById(R.id.button_connect);
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         button_connect.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Log.d(LOG_TAG, "button_connect clicked");
-                if (value != null) {
+                if(value != null) {
                     Intent i = new Intent(Intents.INTENT_UI);
                     i.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_ACTION_BLUETOOTH_CONNECT);
                     i.putExtra(Intents.INTENT_EXTRA_DATA, value);
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void restoreUI() {
+        Log.d(LOG_TAG, "restoreUI");
         String name = preferences.getString(preferences.DEVICE_NAME);
         String addr = preferences.getString(preferences.DEVICE_ADDR);
 
@@ -154,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNotificationAccess() {
+        Log.d(LOG_TAG, "showNotificationAccess");
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(R.string.dialog_access_title);
         dialog.setMessage(R.string.dialog_access_message);
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProgressConnecting() {
+        Log.d(LOG_TAG, "showProgressConnecting");
         if(isConnecting == false) {
             progress_connecting = new ProgressDialog(MainActivity.this);
             progress_connecting.setMessage(getString(R.string.progress_dialog_connecting));
@@ -186,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void closeProgressConnecting() {
+        Log.d(LOG_TAG, "closeProgressConnecting");
         if(isConnecting == true) {
             if(progress_connecting != null) {
                 progress_connecting.dismiss();
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProgressScan() {
-        Log.d(LOG_TAG, "showProgressScan()");
+        Log.d(LOG_TAG, "showProgressScan");
         progress_scan = new ProgressDialog(MainActivity.this);
         progress_scan.setMessage(getString(R.string.progress_dialog_scan));
         progress_scan.setCancelable(false);
@@ -204,12 +209,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void closeProgressScan() {
+        Log.d(LOG_TAG, "closeProgressScan");
         if(progress_scan != null) {
             progress_scan.dismiss();
         }
     }
 
     private void showDialogScan(final CharSequence[] entries, final CharSequence[] values) {
+        Log.d(LOG_TAG, "showDialogScan");
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(R.string.dialog_scan_title);
         builder.setItems(entries, new DialogInterface.OnClickListener() {

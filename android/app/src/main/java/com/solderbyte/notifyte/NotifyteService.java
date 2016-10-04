@@ -185,6 +185,7 @@ public class NotifyteService extends Service {
             final String contact = intent.getStringExtra(Intents.INTENT_NOTIFICATION_CONTACT);
             final String group = intent.getStringExtra(Intents.INTENT_NOTIFICATION_GROUP);
             final String message = intent.getStringExtra(Intents.INTENT_NOTIFICATION_MESSAGE);
+            final boolean reply = intent.getBooleanExtra(Intents.INTENT_NOTIFICATION_REPLY, false);
             final long created = intent.getLongExtra(Intents.INTENT_NOTIFICATION_CREATED, 0);
             final int id = intent.getIntExtra(Intents.INTENT_NOTIFICATION_ID, 0);
 
@@ -197,6 +198,7 @@ public class NotifyteService extends Service {
                 json.put(Intents.JSON_CONTACT, contact);
                 json.put(Intents.JSON_GROUP, group);
                 json.put(Intents.JSON_MESSAGE, message);
+                json.put(Intents.JSON_REPLY, reply);
                 json.put(Intents.JSON_CREATED, created);
                 json.put(Intents.JSON_ID, id);
             }

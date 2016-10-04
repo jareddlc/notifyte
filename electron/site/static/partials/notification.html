@@ -16,9 +16,9 @@
 
   <div class="container-reset chat-input">
     <form class="input-group" ng-submit="send(form.message)">
-      <input type="text" class="form-control" ng-model="form.message">
+      <input type="text" class="form-control" ng-model="form.message" placeholder="[[getPlaceholder()]]" ng-disabled="!canReply()">
       <span class="input-group-btn">
-        <button class="btn btn-send" type="submit">Send</button>
+        <button class="btn btn-send" type="submit" ng-disabled="!canReply()">Send</button>
       </span>
     </form>
   </div>
