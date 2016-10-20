@@ -20,6 +20,7 @@ config.logging = {
 
 config.window = {
   title: 'Notifyte',
+  icon: '../site/static/img/notifyte_64x64.png',
   width: 800,
   height: 600,
   minWidth: 600,

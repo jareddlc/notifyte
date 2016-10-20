@@ -104,10 +104,8 @@ notifyteServices.factory('notificationService', ['$rootScope', '$resource', '$ti
             });
             connected.onclick = function(event) {
               if(event && event.target && event.target.tag) {
-                $rootScope.$apply(function() {
-                  sCurrentNotification(event.target.tag);
-                  $location.path('/notification');
-                });
+                sCurrentNotification(event.target.tag);
+                $location.path('/notification');
               }
             };
           }
