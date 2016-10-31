@@ -74,7 +74,7 @@ public class NotifyteService extends Service {
         PendingIntent stopIntent = PendingIntent.getBroadcast(this, 0, stopService, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this);
-        nBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        nBuilder.setSmallIcon(R.mipmap.icon_launcher);
         nBuilder.setContentTitle(getString(R.string.notification_title));
         if(connected || isConnected) {
             nBuilder.setContentText(getString(R.string.notification_connected));
@@ -85,18 +85,18 @@ public class NotifyteService extends Service {
         nBuilder.setContentIntent(startIntent);
         nBuilder.setAutoCancel(true);
         nBuilder.setOngoing(true);
-        nBuilder.addAction(R.mipmap.ic_launcher, getString(R.string.notification_close), stopIntent);
+        nBuilder.addAction(R.mipmap.icon_shutdown, getString(R.string.notification_close), stopIntent);
         if(connected) {
             Intent cIntent = new Intent(Intents.INTENT_BLUETOOTH);
-            cIntent.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_DISCONNECT);
+            cIntent.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_ACTION_BLUETOOTH_DISCONNECT);
             PendingIntent pConnect = PendingIntent.getBroadcast(this, 0, cIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            nBuilder.addAction(R.mipmap.ic_launcher, getString(R.string.notification_disconnect), pConnect);
+            nBuilder.addAction(R.mipmap.icon_bluetooth_disconnected, getString(R.string.notification_disconnect), pConnect);
         }
         else {
             Intent cIntent = new Intent(Intents.INTENT_BLUETOOTH);
-            cIntent.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_BLUETOOTH_CONNECT);
+            cIntent.putExtra(Intents.INTENT_EXTRA_MSG, Intents.INTENT_ACTION_BLUETOOTH_CONNECT);
             PendingIntent pConnect = PendingIntent.getBroadcast(this, 0, cIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            nBuilder.addAction(R.mipmap.ic_launcher, getString(R.string.notification_connect), pConnect);
+            nBuilder.addAction(R.mipmap.icon_bluetooth_connected, getString(R.string.notification_connect), pConnect);
         }
 
         // Sets an ID for the notification

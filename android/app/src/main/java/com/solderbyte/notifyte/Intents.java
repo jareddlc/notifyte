@@ -26,6 +26,7 @@ public class Intents {
     public static final String INTENT_ACTION_BLUETOOTH_SCAN = "com.solderbyte.notifyte.action.bluetooth.scan";
     public static final String INTENT_ACTION_BLUETOOTH_ENABLE = "com.solderbyte.notifyte.action.bluetooth.enable";
     public static final String INTENT_ACTION_BLUETOOTH_CONNECT = "com.solderbyte.notifyte.action.bluetooth.connectBle";
+    public static final String INTENT_ACTION_BLUETOOTH_DISCONNECT = "com.solderbyte.notifyte.action.bluetooth.disconnectBle";
 
     public static final String INTENT_SERVICE_START = "com.solderbyte.notifyte.service.start";
     public static final String INTENT_SERVICE_STOP = "com.solderbyte.notifyte.service.stop";
